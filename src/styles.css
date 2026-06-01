@@ -235,13 +235,13 @@
 
 /* VAGA huge text */
 .etiqueta .et-vaga-box {
-  flex: 1;
+  flex: 1.4;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 56pt;
-  letter-spacing: 2px;
+  font-size: 72pt;
+  letter-spacing: 3px;
   border-bottom: 2px solid #000;
   padding: 8px;
 }
