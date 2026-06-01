@@ -79,14 +79,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Gerador etiquetas caixas de arquivo TRE-GO" },
+      { name: "description", content: "Gerador de etiquetas para as caixas do arquivo do TRE-GO (uso exclusivo dos mebros do arquivo)" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Gerador etiquetas caixas de arquivo TRE-GO" },
+      { property: "og:description", content: "Gerador de etiquetas para as caixas do arquivo do TRE-GO (uso exclusivo dos mebros do arquivo)" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Gerador etiquetas caixas de arquivo TRE-GO" },
+      { name: "twitter:description", content: "Gerador de etiquetas para as caixas do arquivo do TRE-GO (uso exclusivo dos mebros do arquivo)" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/NMR0GSJySHPsj75MpA4IxT1v6143/social-images/social-1780317539254-3_Marca_TRE_sim_Cor_Cha.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/NMR0GSJySHPsj75MpA4IxT1v6143/social-images/social-1780317539254-3_Marca_TRE_sim_Cor_Cha.webp" },
     ],
     links: [
       {
