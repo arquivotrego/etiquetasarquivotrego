@@ -9,8 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ImprimirRouteImport } from './routes/imprimir'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as GeradorRouteImport } from './routes/gerador'
+import { Route as CodigosRouteImport } from './routes/codigos'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ImprimirRoute = ImprimirRouteImport.update({
+  id: '/imprimir',
+  path: '/imprimir',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeradorRoute = GeradorRouteImport.update({
+  id: '/gerador',
+  path: '/gerador',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CodigosRoute = CodigosRouteImport.update({
+  id: '/codigos',
+  path: '/codigos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +43,72 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/codigos': typeof CodigosRoute
+  '/gerador': typeof GeradorRoute
+  '/historico': typeof HistoricoRoute
+  '/imprimir': typeof ImprimirRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/codigos': typeof CodigosRoute
+  '/gerador': typeof GeradorRoute
+  '/historico': typeof HistoricoRoute
+  '/imprimir': typeof ImprimirRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/codigos': typeof CodigosRoute
+  '/gerador': typeof GeradorRoute
+  '/historico': typeof HistoricoRoute
+  '/imprimir': typeof ImprimirRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/codigos' | '/gerador' | '/historico' | '/imprimir'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/codigos' | '/gerador' | '/historico' | '/imprimir'
+  id: '__root__' | '/' | '/codigos' | '/gerador' | '/historico' | '/imprimir'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CodigosRoute: typeof CodigosRoute
+  GeradorRoute: typeof GeradorRoute
+  HistoricoRoute: typeof HistoricoRoute
+  ImprimirRoute: typeof ImprimirRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/imprimir': {
+      id: '/imprimir'
+      path: '/imprimir'
+      fullPath: '/imprimir'
+      preLoaderRoute: typeof ImprimirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gerador': {
+      id: '/gerador'
+      path: '/gerador'
+      fullPath: '/gerador'
+      preLoaderRoute: typeof GeradorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/codigos': {
+      id: '/codigos'
+      path: '/codigos'
+      fullPath: '/codigos'
+      preLoaderRoute: typeof CodigosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +121,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CodigosRoute: CodigosRoute,
+  GeradorRoute: GeradorRoute,
+  HistoricoRoute: HistoricoRoute,
+  ImprimirRoute: ImprimirRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
