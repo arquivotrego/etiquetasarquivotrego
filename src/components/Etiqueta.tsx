@@ -1,60 +1,56 @@
 import type { Etiqueta as EtiquetaT } from "@/lib/storage";
+import logoUrl from "@/assets/tre-go-logo.png";
 
 export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
   const codigos = data.codigos ?? [];
-  const linhas = [0, 1, 2, 3].map((i) => codigos[i] ?? { codigo: "", descricao: "" });
+  const cells = [0, 1, 2, 3].map((i) => codigos[i]?.codigo ?? "");
+  const descricao = codigos
+    .filter((c) => c.descricao)
+    .map((c) => c.descricao)
+    .join(" / ");
+
   return (
     <div className="etiqueta">
-      <div className="et-header">
-        TRIBUNAL REGIONAL ELEITORAL DE GOIÁS
-        <br />
-        SEÇÃO DE GESTÃO DOCUMENTAL — SEDOC
-      </div>
-
-      <div className="et-row">
-        <div className="et-cell">
-          <div className="et-label">ANO DE PRODUÇÃO</div>
-          <div className="et-value">{data.ano || "————"}</div>
+      {/* TOP: logo + meta grid */}
+      <div className="et-top">
+        <div className="et-logo">
+          <img src={logoUrl} alt="TRE-GO" />
         </div>
-        <div className="et-cell">
-          <div className="et-label">DESTINO / FINAL</div>
-          <div className="et-value">{data.final || "————"}</div>
-        </div>
-      </div>
-
-      <div className="et-row">
-        <div className="et-cell et-check">
-          <span className="box" />
-          GUARDA
-        </div>
-        <div className="et-cell et-check">
-          <span className="box" />
-          PERMANENTE
-        </div>
-      </div>
-
-      <div className="et-row">
-        <div className="et-cell" style={{ flex: 1 }}>
-          <div className="et-vaga">VAGA {data.vaga || "————"}</div>
-        </div>
-      </div>
-
-      <div className="et-codigos">
-        {linhas.map((l, i) => (
-          <div key={i} className="et-codigo-line">
-            {l.codigo ? `${l.codigo}${l.descricao ? "  —  " + l.descricao : ""}` : "\u00A0"}
+        <div className="et-meta">
+          <div className="et-meta-row et-ano">
+            ANO DE PRODUÇÃO&nbsp;&nbsp;{data.ano || ""}
           </div>
+          <div className="et-meta-row et-split">
+            <div className="et-half">DESTINO</div>
+            <div className="et-half">FINAL</div>
+          </div>
+          <div className="et-meta-row et-split et-guarda">
+            <div className="et-half">GUARDA<br/>PERMANENTE</div>
+            <div className="et-half et-final-year">{data.final || ""}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Gray title bands */}
+      <div className="et-band">TRIBUNAL REGIONAL ELEITORAL DE GOIÁS</div>
+      <div className="et-band">SEÇÃO DE GESTÃO DOCUMENTAL - SEDOC</div>
+
+      {/* VAGA */}
+      <div className="et-vaga-box">
+        VAGA {data.vaga || ""}
+      </div>
+
+      {/* Códigos row */}
+      <div className="et-cods">
+        <div className="et-cods-label">Códigos:</div>
+        {cells.map((c, i) => (
+          <div key={i} className="et-cods-cell">{c}</div>
         ))}
       </div>
 
-      <div className="et-desc">
-        <div className="et-desc-title">Descrição:</div>
-        <div>
-          {codigos
-            .filter((c) => c.descricao)
-            .map((c) => c.descricao)
-            .join(" • ")}
-        </div>
+      {/* Descrição */}
+      <div className="et-descricao">
+        <b>Descrição :</b> {descricao}{descricao ? " | GP" : ""}
       </div>
     </div>
   );
