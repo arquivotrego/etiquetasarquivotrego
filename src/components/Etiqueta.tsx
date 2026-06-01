@@ -37,7 +37,8 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
 
       {/* VAGA */}
       <div className="et-vaga-box">
-        VAGA {data.vaga || ""}
+        <div className="et-vaga-label">VAGA</div>
+        <div className="et-vaga-num">{data.vaga || ""}</div>
       </div>
 
       {/* Códigos row */}
