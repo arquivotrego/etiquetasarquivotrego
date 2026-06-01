@@ -17,8 +17,9 @@ export const Route = createFileRoute("/imprimir")({
 function ImprimirPage() {
   const navigate = useNavigate();
   const { ids } = Route.useSearch();
-  const idList = (ids ?? "").split(",").filter(Boolean).slice(0, 2);
-  const etiquetas = idList.map((id) => etiquetasStore.get(id)).filter(Boolean);
+  const idList: string[] = (ids ?? "").split(",").filter(Boolean).slice(0, 2);
+  const etiquetas = idList.map((id: string) => etiquetasStore.get(id)).filter((x): x is NonNullable<typeof x> => Boolean(x));
+
 
   useEffect(() => {
     // auto-trigger print dialog shortly after mount
@@ -60,8 +61,9 @@ function ImprimirPage() {
 
       <div className="print-area glass rounded-2xl p-6 flex flex-wrap justify-around gap-6">
         {etiquetas.map((e) => (
-          <Etiqueta key={e!.id} data={e!} />
+          <Etiqueta key={e.id} data={e} />
         ))}
+
       </div>
     </div>
   );
