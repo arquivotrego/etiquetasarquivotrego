@@ -23,7 +23,12 @@ function ImprimirPage() {
   const perPage = mode === "single" ? 1 : 2;
   const etiquetas = idList
     .map((id) => etiquetasStore.get(id))
-    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .sort((a, b) => {
+      const na = parseInt(a.vaga, 10) || 0;
+      const nb = parseInt(b.vaga, 10) || 0;
+      return na - nb;
+    });
   const pages: typeof etiquetas[] = [];
   for (let i = 0; i < etiquetas.length; i += perPage) {
     pages.push(etiquetas.slice(i, i + perPage));
