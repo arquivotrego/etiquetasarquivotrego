@@ -110,13 +110,13 @@ function HistoricoPage() {
                   className="h-5 w-5 accent-[color:var(--color-primary)]"
                 />
                 <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
-                  <div><span className="text-xs text-muted-foreground block">Ano</span><b>{e.ano}</b></div>
-                  <div><span className="text-xs text-muted-foreground block">Final</span><b>{e.final || "—"}</b></div>
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
                   <div className="truncate">
-                    <span className="text-xs text-muted-foreground block">Códigos</span>
+                    <span className="text-xs text-muted-foreground block">Código</span>
                     <b className="truncate">{e.codigos.map((c) => c.codigo).join(", ")}</b>
                   </div>
+                  <div><span className="text-xs text-muted-foreground block">Ano de Produção</span><b>{e.ano}</b></div>
+                  <div><span className="text-xs text-muted-foreground block">Final</span><b>{e.final || "—"}</b></div>
                 </div>
                 <div className="flex gap-1">
                   <button
