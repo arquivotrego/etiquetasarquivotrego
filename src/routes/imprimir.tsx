@@ -96,10 +96,14 @@ function ImprimirPage() {
       <div
         className={`print-area ${
           mode === "single" ? "print-single" : "print-double"
-        } glass rounded-2xl p-6 flex flex-wrap justify-center items-center gap-6`}
+        }`}
       >
-        {etiquetas.map((e) => (
-          <Etiqueta key={e.id} data={e} />
+        {pages.map((pageEtqs, idx) => (
+          <div key={idx} className="print-page glass rounded-2xl p-6 flex flex-wrap justify-center items-center gap-6">
+            {pageEtqs.map((e) => (
+              <Etiqueta key={e.id} data={e} />
+            ))}
+          </div>
         ))}
       </div>
     </div>
