@@ -295,6 +295,8 @@
 @page double-page { size: A4 landscape; margin: 0.8cm; }
 @page single-page { size: A4 portrait; margin: 1.2cm; }
 
+.print-area { display: flex; flex-direction: column; gap: 1.5rem; }
+
 @media print {
   html, body {
     background: #fff !important;
@@ -307,14 +309,27 @@
   .print-area {
     position: absolute;
     inset: 0;
+    background: #fff !important;
+  }
+  .print-area .print-page {
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.8cm;
     padding: 0;
+    margin: 0;
     background: #fff !important;
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+  .print-area .print-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
   .print-area .etiqueta { box-shadow: none !important; }
   .print-double { page: double-page; }

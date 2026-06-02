@@ -20,11 +20,14 @@ function ImprimirPage() {
   const navigate = useNavigate();
   const { ids, mode = "double" } = Route.useSearch();
   const idList: string[] = (ids ?? "").split(",").filter(Boolean);
-  const maxN = mode === "single" ? 1 : 2;
+  const perPage = mode === "single" ? 1 : 2;
   const etiquetas = idList
-    .slice(0, maxN)
     .map((id) => etiquetasStore.get(id))
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
+  const pages: typeof etiquetas[] = [];
+  for (let i = 0; i < etiquetas.length; i += perPage) {
+    pages.push(etiquetas.slice(i, i + perPage));
+  }
 
   useEffect(() => {
     const t = setTimeout(() => window.print(), 400);
@@ -93,10 +96,14 @@ function ImprimirPage() {
       <div
         className={`print-area ${
           mode === "single" ? "print-single" : "print-double"
-        } glass rounded-2xl p-6 flex flex-wrap justify-center items-center gap-6`}
+        }`}
       >
-        {etiquetas.map((e) => (
-          <Etiqueta key={e.id} data={e} />
+        {pages.map((pageEtqs, idx) => (
+          <div key={idx} className="print-page glass rounded-2xl p-6 flex flex-wrap justify-center items-center gap-6">
+            {pageEtqs.map((e) => (
+              <Etiqueta key={e.id} data={e} />
+            ))}
+          </div>
         ))}
       </div>
     </div>
