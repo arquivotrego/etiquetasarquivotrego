@@ -42,8 +42,8 @@ function GeradorPage() {
   }
 
   const valid = useMemo(
-    () => ano.trim() && vaga.trim() && codigos[0].codigo.trim(),
-    [ano, vaga, codigos],
+    () => ano.trim() && final.trim() && vaga.trim() && codigos[0].codigo.trim(),
+    [ano, final, vaga, codigos],
   );
 
   const preview = {
