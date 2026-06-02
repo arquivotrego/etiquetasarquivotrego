@@ -35,9 +35,12 @@ function HistoricoPage() {
   }, [list, q]);
 
   function toggle(id: string) {
-    setSelected((s) =>
-      s.includes(id) ? s.filter((x) => x !== id) : s.length >= 2 ? [s[1], id] : [...s, id],
-    );
+    setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  }
+  const allSelected = filtered.length > 0 && filtered.every((e) => selected.includes(e.id));
+  function toggleAll() {
+    if (allSelected) setSelected((s) => s.filter((id) => !filtered.some((e) => e.id === id)));
+    else setSelected((s) => Array.from(new Set([...s, ...filtered.map((e) => e.id)])));
   }
 
   const printHref = selected.length
