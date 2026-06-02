@@ -53,10 +53,18 @@ function HistoricoPage() {
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Histórico & Impressão</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Selecione até 2 etiquetas para imprimir lado a lado em A4 paisagem.
+            Selecione quantas etiquetas quiser — serão impressas 2 por folha A4 paisagem.
           </p>
         </div>
         <div className="flex gap-2">
+          {filtered.length > 0 && (
+            <button
+              onClick={toggleAll}
+              className="h-11 px-4 rounded-xl glass-input text-sm font-medium hover:bg-white/80"
+            >
+              {allSelected ? "Desmarcar todas" : "Selecionar todas"}
+            </button>
+          )}
           {printHref ? (
             <Link
               to="/imprimir"
