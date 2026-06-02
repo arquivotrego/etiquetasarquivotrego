@@ -81,14 +81,14 @@ function GeradorPage() {
 
         <div className="glass-strong rounded-2xl p-5 space-y-4">
           <div className="grid sm:grid-cols-3 gap-3">
-            <Field label="Ano de Produção">
+            <Field label="Número da Vaga *">
+              <input value={vaga} onChange={(e) => setVaga(e.target.value)} className="ios-input" placeholder="0123" inputMode="numeric" />
+            </Field>
+            <Field label="Ano de Produção *">
               <input value={ano} onChange={(e) => setAno(e.target.value)} className="ios-input" placeholder="2024" inputMode="numeric" />
             </Field>
-            <Field label="Final">
+            <Field label="Final *">
               <input value={final} onChange={(e) => setFinal(e.target.value)} className="ios-input" placeholder="2025" inputMode="numeric" />
-            </Field>
-            <Field label="Número da Vaga">
-              <input value={vaga} onChange={(e) => setVaga(e.target.value)} className="ios-input" placeholder="0123" inputMode="numeric" />
             </Field>
           </div>
 
