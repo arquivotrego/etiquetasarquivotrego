@@ -60,6 +60,7 @@ function GeradorPage() {
       final: final.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
+      tipo: "permanente",
     });
     if (printAfter) {
       navigate({ to: "/imprimir", search: { ids: saved.id } });
