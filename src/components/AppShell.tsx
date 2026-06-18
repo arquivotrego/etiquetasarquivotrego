@@ -78,7 +78,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   ].join(" ")}
                 >
                   <item.icon className="h-4 w-4" />
-                  {item.label.split(" ")[0]}
+                  {item.short}
                 </Link>
               );
             })}
