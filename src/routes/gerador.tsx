@@ -5,7 +5,7 @@ import { Etiqueta } from "@/components/Etiqueta";
 import { Save, Printer } from "lucide-react";
 
 export const Route = createFileRoute("/gerador")({
-  head: () => ({ meta: [{ title: "Gerador de Etiquetas — TRE-GO" }] }),
+  head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Permanente — TRE-GO" }] }),
   component: GeradorPage,
 });
 
