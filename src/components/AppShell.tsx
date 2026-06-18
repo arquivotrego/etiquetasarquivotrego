@@ -3,10 +3,11 @@ import { FileText, Tags, Search, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
 
-const nav: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: "/gerador", label: "Gerador de Etiquetas", icon: Tags },
-  { to: "/codigos", label: "Cadastro de Códigos", icon: FileText },
-  { to: "/historico", label: "Histórico & Impressão", icon: Search },
+const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
+  { to: "/gerador", label: "Etiquetas - Guarda Permanente", short: "Permanente", icon: Tags },
+  { to: "/gerador-intermediaria", label: "Etiquetas - Guarda Intermediária", short: "Intermediária", icon: Tags },
+  { to: "/codigos", label: "Cadastro de Códigos", short: "Códigos", icon: FileText },
+  { to: "/historico", label: "Histórico & Impressão", short: "Histórico", icon: Search },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
