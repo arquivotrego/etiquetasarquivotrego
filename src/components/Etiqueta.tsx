@@ -61,8 +61,6 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
       <div className="et-descricao">
         <b>Descrição :</b> {descricao}{descricao ? (isInter ? " | GI" : " | GP") : ""}
       </div>
-      {/* destinoLabel inline marker (intermediária uses ELIMINAÇÃO above) */}
-      <span style={{ display: "none" }}>{destinoLabel}</span>
     </div>
   );
 }
