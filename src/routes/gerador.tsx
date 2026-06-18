@@ -51,6 +51,7 @@ function GeradorPage() {
     final,
     vaga,
     codigos: codigos.filter((c) => c.codigo.trim()),
+    tipo: "permanente" as const,
   };
 
   function gerar(printAfter = false) {
