@@ -1,4 +1,5 @@
 export type Codigo = { id: string; codigo: string; descricao: string };
+export type TipoEtiqueta = "permanente" | "intermediaria";
 export type Etiqueta = {
   id: string;
   ano: string;
@@ -8,6 +9,7 @@ export type Etiqueta = {
   destino?: string;
   guarda?: string;
   permanente?: boolean;
+  tipo?: TipoEtiqueta;
   createdAt: number;
 };
 
