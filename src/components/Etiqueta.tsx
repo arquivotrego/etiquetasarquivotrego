@@ -11,7 +11,6 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
 
   const tipo = data.tipo ?? "permanente";
   const isInter = tipo === "intermediaria";
-  const destinoLabel = isInter ? "ELIMINAÇÃO" : "DESTINO";
   const guardaLabel = isInter ? (
     <>GUARDA<br/>INTERMEDIÁRIA</>
   ) : (
