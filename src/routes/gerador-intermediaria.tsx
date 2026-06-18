@@ -4,12 +4,12 @@ import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
 import { Save, Printer } from "lucide-react";
 
-export const Route = createFileRoute("/gerador")({
-  head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Permanente — TRE-GO" }] }),
-  component: GeradorPage,
+export const Route = createFileRoute("/gerador-intermediaria")({
+  head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Intermediária — TRE-GO" }] }),
+  component: GeradorIntermediariaPage,
 });
 
-function GeradorPage() {
+function GeradorIntermediariaPage() {
   const navigate = useNavigate();
   const [ano, setAno] = useState("");
   const [final, setFinal] = useState("");
@@ -51,7 +51,7 @@ function GeradorPage() {
     final,
     vaga,
     codigos: codigos.filter((c) => c.codigo.trim()),
-    tipo: "permanente" as const,
+    tipo: "intermediaria" as const,
   };
 
   function gerar(printAfter = false) {
@@ -61,7 +61,7 @@ function GeradorPage() {
       final: final.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
-      tipo: "permanente",
+      tipo: "intermediaria",
     });
     if (printAfter) {
       navigate({ to: "/imprimir", search: { ids: saved.id } });
@@ -72,10 +72,9 @@ function GeradorPage() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-      {/* Form */}
       <div className="space-y-4">
         <header className="glass rounded-2xl p-5">
-          <h2 className="text-xl font-semibold tracking-tight">GERADOR DE ETIQUETAS - ADM - GUARDA PERMANENTE</h2>
+          <h2 className="text-xl font-semibold tracking-tight">GERADOR DE ETIQUETAS - ADM - GUARDA INTERMEDIÁRIA</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Preencha os dados — a pré-visualização é atualizada em tempo real.
           </p>
@@ -87,10 +86,10 @@ function GeradorPage() {
               <input value={vaga} onChange={(e) => setVaga(e.target.value)} className="ios-input" placeholder="0123" inputMode="numeric" />
             </Field>
             <Field label="Ano de Produção *">
-              <input value={ano} onChange={(e) => setAno(e.target.value)} className="ios-input" placeholder="2024" inputMode="numeric" />
+              <input value={ano} onChange={(e) => setAno(e.target.value)} className="ios-input" placeholder="2015" inputMode="numeric" />
             </Field>
-            <Field label="Final *">
-              <input value={final} onChange={(e) => setFinal(e.target.value)} className="ios-input" placeholder="2025" inputMode="numeric" />
+            <Field label="Prazo Final *">
+              <input value={final} onChange={(e) => setFinal(e.target.value)} className="ios-input" placeholder="2022" inputMode="numeric" />
             </Field>
           </div>
 
@@ -99,11 +98,11 @@ function GeradorPage() {
               <div key={i} className="grid sm:grid-cols-[160px_1fr] gap-3">
                 <Field label={`Código ${i + 1}${i === 0 ? " *" : ""}`}>
                   <input
-                    list="lista-codigos"
+                    list="lista-codigos-inter"
                     value={c.codigo}
                     onChange={(e) => setCodigo(i, e.target.value)}
                     className="ios-input font-mono"
-                    placeholder="13.32"
+                    placeholder="12.02.04"
                   />
                 </Field>
                 <Field label="Descrição">
@@ -111,12 +110,12 @@ function GeradorPage() {
                     value={c.descricao}
                     onChange={(e) => setDescricao(i, e.target.value)}
                     className="ios-input"
-                    placeholder="REGISTRO DE CANDIDATURA"
+                    placeholder="SUSPENSÃO DOS DIREITOS POLÍTICOS"
                   />
                 </Field>
               </div>
             ))}
-            <datalist id="lista-codigos">
+            <datalist id="lista-codigos-inter">
               {cadastrados.map((c) => (
                 <option key={c.id} value={c.codigo}>{c.descricao}</option>
               ))}
@@ -142,7 +141,6 @@ function GeradorPage() {
         </div>
       </div>
 
-      {/* Preview */}
       <div className="lg:sticky lg:top-24 lg:self-start">
         <div className="glass rounded-2xl p-4">
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1">Pré-visualização</div>

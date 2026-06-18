@@ -9,6 +9,14 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
     .map((c) => c.descricao)
     .join(" / ");
 
+  const tipo = data.tipo ?? "permanente";
+  const isInter = tipo === "intermediaria";
+  const guardaLabel = isInter ? (
+    <>GUARDA<br/>INTERMEDIÁRIA</>
+  ) : (
+    <>GUARDA<br/>PERMANENTE</>
+  );
+
   return (
     <div className="etiqueta">
       {/* TOP: logo + meta grid */}
@@ -22,10 +30,10 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
           </div>
           <div className="et-meta-row et-split">
             <div className="et-half">DESTINO</div>
-            <div className="et-half">FINAL</div>
+            <div className="et-half">{isInter ? "ELIMINAÇÃO" : "FINAL"}</div>
           </div>
           <div className="et-meta-row et-split et-guarda">
-            <div className="et-half">GUARDA<br/>PERMANENTE</div>
+            <div className="et-half">{guardaLabel}</div>
             <div className="et-half et-final-year">{data.final || ""}</div>
           </div>
         </div>
@@ -51,7 +59,7 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
 
       {/* Descrição */}
       <div className="et-descricao">
-        <b>Descrição :</b> {descricao}{descricao ? " | GP" : ""}
+        <b>Descrição :</b> {descricao}{descricao ? (isInter ? " | GI" : " | GP") : ""}
       </div>
     </div>
   );
