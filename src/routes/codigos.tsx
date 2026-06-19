@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { codigosStore, type Codigo } from "@/lib/storage";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Search } from "lucide-react";
 
 export const Route = createFileRoute("/codigos")({
   head: () => ({
@@ -14,6 +14,8 @@ function CodigosPage() {
   const [list, setList] = useState<Codigo[]>([]);
   const [codigo, setCodigo] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [prazo, setPrazo] = useState("");
+  const [q, setQ] = useState("");
 
   const refresh = () => setList(codigosStore.list());
   useEffect(() => {
@@ -26,36 +28,43 @@ function CodigosPage() {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!codigo.trim() || !descricao.trim()) return;
-    codigosStore.add(codigo.trim(), descricao.trim().toUpperCase());
+    const p = parseInt(prazo, 10);
+    codigosStore.add(codigo.trim(), descricao.trim().toUpperCase(), isNaN(p) ? undefined : p);
     setCodigo("");
     setDescricao("");
+    setPrazo("");
   }
+
+  const filtered = useMemo(() => {
+    const s = q.toLowerCase().trim();
+    if (!s) return list;
+    return list.filter((c) =>
+      (c.codigo + " " + c.descricao).toLowerCase().includes(s),
+    );
+  }, [list, q]);
+
+  const builtinCount = list.filter((c) => c.builtin).length;
+  const userCount = list.length - builtinCount;
 
   return (
     <div className="space-y-4">
       <header className="glass rounded-2xl p-5">
         <h2 className="text-xl font-semibold tracking-tight">Cadastro de Códigos</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Cadastre os códigos documentais (ex.: 13.32) e suas descrições para alimentar o gerador.
+          {builtinCount} códigos padrão (Tabela de Temporalidade GP) + {userCount} personalizados.
+          O <b>prazo</b> é usado para calcular automaticamente o Prazo Final na etiqueta (Ano + Prazo).
         </p>
       </header>
 
-      <form onSubmit={submit} className="glass-strong rounded-2xl p-5 grid gap-3 md:grid-cols-[180px_1fr_auto]">
+      <form onSubmit={submit} className="glass-strong rounded-2xl p-5 grid gap-3 md:grid-cols-[160px_1fr_120px_auto]">
         <Field label="Código">
-          <input
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            placeholder="13.32"
-            className="ios-input"
-          />
+          <input value={codigo} onChange={(e) => setCodigo(e.target.value)} placeholder="13.32" className="ios-input" />
         </Field>
         <Field label="Descrição">
-          <input
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            placeholder="REGISTRO DE CANDIDATURA"
-            className="ios-input"
-          />
+          <input value={descricao} onChange={(e) => setDescricao(e.target.value)} placeholder="REGISTRO DE CANDIDATURA" className="ios-input" />
+        </Field>
+        <Field label="Prazo (anos)">
+          <input value={prazo} onChange={(e) => setPrazo(e.target.value)} placeholder="7" inputMode="numeric" className="ios-input" />
         </Field>
         <div className="flex items-end">
           <button className="h-11 px-5 rounded-xl bg-primary text-primary-foreground font-medium inline-flex items-center gap-2 shadow-md hover:opacity-90 transition">
@@ -64,41 +73,69 @@ function CodigosPage() {
         </div>
       </form>
 
+      <div className="glass-strong rounded-2xl p-3 flex items-center gap-2">
+        <Search className="h-4 w-4 ml-2 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Pesquisar código ou descrição…"
+          className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
+        />
+      </div>
+
       <div className="glass rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-white/40 text-sm font-medium">
-          Códigos cadastrados ({list.length})
+          {filtered.length} de {list.length} códigos
         </div>
-        {list.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
-            Nenhum código cadastrado ainda.
+            Nenhum código encontrado.
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-white/40 text-left">
-              <tr>
-                <th className="px-5 py-2 w-40">Código</th>
-                <th className="px-5 py-2">Descrição</th>
-                <th className="px-5 py-2 w-20"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((c) => (
-                <tr key={c.id} className="border-t border-white/40 hover:bg-white/40">
-                  <td className="px-5 py-2 font-mono font-semibold">{c.codigo}</td>
-                  <td className="px-5 py-2">{c.descricao}</td>
-                  <td className="px-5 py-2 text-right">
-                    <button
-                      onClick={() => codigosStore.remove(c.id)}
-                      className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"
-                      aria-label="Excluir"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </td>
+          <div className="max-h-[60vh] overflow-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-white/60 text-left sticky top-0 backdrop-blur">
+                <tr>
+                  <th className="px-5 py-2 w-32">Código</th>
+                  <th className="px-5 py-2">Descrição</th>
+                  <th className="px-5 py-2 w-24 text-center">Prazo</th>
+                  <th className="px-5 py-2 w-28">Origem</th>
+                  <th className="px-5 py-2 w-12"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((c) => (
+                  <tr key={c.id} className="border-t border-white/40 hover:bg-white/40">
+                    <td className="px-5 py-2 font-mono font-semibold">{c.codigo}</td>
+                    <td className="px-5 py-2">{c.descricao}</td>
+                    <td className="px-5 py-2 text-center font-mono">
+                      {c.prazo ? `${c.prazo} anos` : "—"}
+                    </td>
+                    <td className="px-5 py-2">
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                        c.builtin
+                          ? "bg-primary/10 text-primary"
+                          : "bg-amber-500/15 text-amber-700"
+                      }`}>
+                        {c.builtin ? "Padrão" : "Personalizado"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-2 text-right">
+                      {!c.builtin && (
+                        <button
+                          onClick={() => codigosStore.remove(c.id)}
+                          className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"
+                          aria-label="Excluir"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

@@ -1,4 +1,6 @@
-export type Codigo = { id: string; codigo: string; descricao: string };
+import { TEMPORALIDADE_GP } from "./temporalidade";
+
+export type Codigo = { id: string; codigo: string; descricao: string; prazo?: number; builtin?: boolean };
 export type TipoEtiqueta = "permanente" | "intermediaria";
 export type Etiqueta = {
   id: string;
@@ -31,28 +33,53 @@ function write<T>(key: string, value: T) {
   window.dispatchEvent(new CustomEvent("tre-storage", { detail: { key } }));
 }
 
+const BUILTIN: Codigo[] = TEMPORALIDADE_GP.map((t) => ({
+  id: `builtin-${t.codigo}`,
+  codigo: t.codigo,
+  descricao: t.descricao,
+  prazo: t.prazo,
+  builtin: true,
+}));
+
+function readUser(): Codigo[] {
+  return read<Codigo[]>(KEY_CODIGOS, []);
+}
+
 export const codigosStore = {
-  list: () => read<Codigo[]>(KEY_CODIGOS, []),
-  add: (codigo: string, descricao: string) => {
-    const list = codigosStore.list();
+  list: (): Codigo[] => {
+    const user = readUser();
+    const userCodes = new Set(user.map((c) => c.codigo));
+    // Builtins come first (override removed only if user redefines with same code)
+    const merged = [
+      ...BUILTIN.filter((b) => !userCodes.has(b.codigo)),
+      ...user,
+    ];
+    return merged.sort((a, b) => a.codigo.localeCompare(b.codigo, "pt-BR", { numeric: true }));
+  },
+  listUser: () => readUser(),
+  add: (codigo: string, descricao: string, prazo?: number) => {
+    const list = readUser();
     const exists = list.find((c) => c.codigo === codigo);
     if (exists) {
       exists.descricao = descricao;
+      if (prazo !== undefined) exists.prazo = prazo;
       write(KEY_CODIGOS, list);
       return exists;
     }
-    const item: Codigo = { id: crypto.randomUUID(), codigo, descricao };
+    const item: Codigo = { id: crypto.randomUUID(), codigo, descricao, prazo };
     write(KEY_CODIGOS, [...list, item]);
     return item;
   },
   remove: (id: string) => {
-    write(
-      KEY_CODIGOS,
-      codigosStore.list().filter((c) => c.id !== id),
-    );
+    write(KEY_CODIGOS, readUser().filter((c) => c.id !== id));
   },
-  find: (codigo: string) =>
-    codigosStore.list().find((c) => c.codigo.trim() === codigo.trim()),
+  find: (codigo: string): Codigo | undefined => {
+    const code = codigo.trim();
+    if (!code) return undefined;
+    const user = readUser().find((c) => c.codigo.trim() === code);
+    if (user) return user;
+    return BUILTIN.find((b) => b.codigo === code);
+  },
 };
 
 export const etiquetasStore = {
@@ -62,6 +89,11 @@ export const etiquetasStore = {
     const item: Etiqueta = { ...e, id: crypto.randomUUID(), createdAt: Date.now() };
     write(KEY_ETIQUETAS, [item, ...etiquetasStore.list()]);
     return item;
+  },
+  update: (id: string, patch: Partial<Omit<Etiqueta, "id" | "createdAt">>) => {
+    const list = etiquetasStore.list().map((e) => (e.id === id ? { ...e, ...patch } : e));
+    write(KEY_ETIQUETAS, list);
+    return list.find((e) => e.id === id);
   },
   remove: (id: string) => {
     write(
@@ -73,6 +105,5 @@ export const etiquetasStore = {
 };
 
 export function useStorageVersion() {
-  // simple subscribe helper for components
   return { KEY_CODIGOS, KEY_ETIQUETAS };
 }

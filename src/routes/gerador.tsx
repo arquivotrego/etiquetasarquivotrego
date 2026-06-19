@@ -1,16 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
 import { Save, Printer } from "lucide-react";
 
+type Search = { edit?: string };
+
 export const Route = createFileRoute("/gerador")({
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    edit: typeof s.edit === "string" ? s.edit : undefined,
+  }),
   head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Permanente — TRE-GO" }] }),
   component: GeradorPage,
 });
 
 function GeradorPage() {
   const navigate = useNavigate();
+  const { edit } = Route.useSearch();
   const [ano, setAno] = useState("");
   const [final, setFinal] = useState("");
   const [vaga, setVaga] = useState("");
@@ -21,12 +27,44 @@ function GeradorPage() {
     { codigo: "", descricao: "" },
   ]);
   const [cadastrados, setCadastrados] = useState(codigosStore.list());
+  const finalManuallyEdited = useRef(false);
+
+  // Carrega para edição
+  useEffect(() => {
+    if (!edit) return;
+    const e = etiquetasStore.get(edit);
+    if (!e) return;
+    setAno(e.ano);
+    setFinal(e.final);
+    setVaga(e.vaga);
+    const base = [...e.codigos];
+    while (base.length < 4) base.push({ codigo: "", descricao: "" });
+    setCodigos(base.slice(0, 4));
+    finalManuallyEdited.current = true;
+  }, [edit]);
 
   useEffect(() => {
     const h = () => setCadastrados(codigosStore.list());
     window.addEventListener("tre-storage", h);
     return () => window.removeEventListener("tre-storage", h);
   }, []);
+
+  // Soma de prazos: usa o maior prazo dos códigos selecionados
+  const somaPrazo = useMemo(() => {
+    const prazos = codigos
+      .map((c) => codigosStore.find(c.codigo)?.prazo ?? 0)
+      .filter((p) => p > 0);
+    return prazos.length ? Math.max(...prazos) : 0;
+  }, [codigos]);
+
+  // Auto-calcula prazo final = ano + soma
+  useEffect(() => {
+    if (finalManuallyEdited.current) return;
+    const n = parseInt(ano, 10);
+    if (!isNaN(n) && somaPrazo > 0) {
+      setFinal(String(n + somaPrazo));
+    }
+  }, [ano, somaPrazo]);
 
   function setCodigo(i: number, codigo: string) {
     const next = [...codigos];
@@ -56,28 +94,33 @@ function GeradorPage() {
 
   function gerar(printAfter = false) {
     if (!valid) return;
-    const saved = etiquetasStore.add({
+    const payload = {
       ano: ano.trim(),
       final: final.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
-      tipo: "permanente",
-    });
-    if (printAfter) {
-      navigate({ to: "/imprimir", search: { ids: saved.id } });
+      tipo: "permanente" as const,
+    };
+    let savedId: string;
+    if (edit) {
+      etiquetasStore.update(edit, payload);
+      savedId = edit;
     } else {
-      navigate({ to: "/historico" });
+      savedId = etiquetasStore.add(payload).id;
     }
+    if (printAfter) navigate({ to: "/imprimir", search: { ids: savedId } });
+    else navigate({ to: "/historico" });
   }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-      {/* Form */}
       <div className="space-y-4">
         <header className="glass rounded-2xl p-5">
-          <h2 className="text-xl font-semibold tracking-tight">GERADOR DE ETIQUETAS - ADM - GUARDA PERMANENTE</h2>
+          <h2 className="text-xl font-semibold tracking-tight">
+            {edit ? "EDITAR ETIQUETA - GUARDA PERMANENTE" : "GERADOR DE ETIQUETAS - ADM - GUARDA PERMANENTE"}
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Preencha os dados — a pré-visualização é atualizada em tempo real.
+            Preencha os dados — o <b>Prazo Final</b> é calculado automaticamente pelo Ano de Produção + Soma dos prazos do código.
           </p>
         </header>
 
@@ -89,8 +132,17 @@ function GeradorPage() {
             <Field label="Ano de Produção *">
               <input value={ano} onChange={(e) => setAno(e.target.value)} className="ios-input" placeholder="2024" inputMode="numeric" />
             </Field>
-            <Field label="Final *">
-              <input value={final} onChange={(e) => setFinal(e.target.value)} className="ios-input" placeholder="2025" inputMode="numeric" />
+            <Field label={`Prazo Final * ${somaPrazo ? `(auto: +${somaPrazo} anos)` : ""}`}>
+              <input
+                value={final}
+                onChange={(e) => {
+                  finalManuallyEdited.current = true;
+                  setFinal(e.target.value);
+                }}
+                className="ios-input"
+                placeholder="2031"
+                inputMode="numeric"
+              />
             </Field>
           </div>
 
@@ -118,7 +170,9 @@ function GeradorPage() {
             ))}
             <datalist id="lista-codigos">
               {cadastrados.map((c) => (
-                <option key={c.id} value={c.codigo}>{c.descricao}</option>
+                <option key={c.id} value={c.codigo}>
+                  {c.descricao}{c.prazo ? ` — ${c.prazo} anos` : ""}
+                </option>
               ))}
             </datalist>
           </div>
@@ -129,7 +183,7 @@ function GeradorPage() {
               onClick={() => gerar(false)}
               className="h-11 px-5 rounded-xl bg-primary text-primary-foreground font-medium inline-flex items-center gap-2 shadow-md hover:opacity-90 disabled:opacity-40 transition"
             >
-              <Save className="h-4 w-4" /> Gerar e Salvar
+              <Save className="h-4 w-4" /> {edit ? "Salvar alterações" : "Gerar e Salvar"}
             </button>
             <button
               disabled={!valid}
@@ -142,7 +196,6 @@ function GeradorPage() {
         </div>
       </div>
 
-      {/* Preview */}
       <div className="lg:sticky lg:top-24 lg:self-start">
         <div className="glass rounded-2xl p-4">
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1">Pré-visualização</div>
