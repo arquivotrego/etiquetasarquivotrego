@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { etiquetasStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/historico")({
   head: () => ({ meta: [{ title: "Histórico de Etiquetas — TRE-GO" }] }),
