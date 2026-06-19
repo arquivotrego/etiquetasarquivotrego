@@ -304,6 +304,13 @@ function HistoricoPage() {
                     Ver
                   </button>
                   <Link
+                    to={(e.tipo ?? "permanente") === "intermediaria" ? "/gerador-intermediaria" : "/gerador"}
+                    search={{ edit: e.id }}
+                    className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
+                  >
+                    <Pencil className="h-3.5 w-3.5" /> Editar
+                  </Link>
+                  <Link
                     to="/imprimir"
                     search={{ ids: e.id }}
                     className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90"
