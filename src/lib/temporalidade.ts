@@ -1,4 +1,5 @@
-[
+export type TemporalidadeItem = { codigo: string; descricao: string; prazo: number };
+export const TEMPORALIDADE_GP: TemporalidadeItem[] = [
   {
     "codigo": "00.01",
     "descricao": "MODERNIZAÇÃO E REESTRUTURAÇÃO ADMINISTRATIVA (PROJETOS, ESTUDOS E NORMAS)",
@@ -1779,4 +1780,4 @@
     "descricao": "REGISTRO DE HASTAS PÚBLICAS",
     "prazo": 6
   }
-]
+];
