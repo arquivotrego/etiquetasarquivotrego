@@ -26,7 +26,7 @@ function GeradorPage() {
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
   ]);
-  const [cadastrados, setCadastrados] = useState(codigosStore.list());
+  const [cadastrados, setCadastrados] = useState(codigosStore.list("permanente"));
   const finalManuallyEdited = useRef(false);
 
   // Carrega para edição
@@ -44,7 +44,7 @@ function GeradorPage() {
   }, [edit]);
 
   useEffect(() => {
-    const h = () => setCadastrados(codigosStore.list());
+    const h = () => setCadastrados(codigosStore.list("permanente"));
     window.addEventListener("tre-storage", h);
     return () => window.removeEventListener("tre-storage", h);
   }, []);
@@ -52,7 +52,7 @@ function GeradorPage() {
   // Soma de prazos: usa o maior prazo dos códigos selecionados
   const somaPrazo = useMemo(() => {
     const prazos = codigos
-      .map((c) => codigosStore.find(c.codigo)?.prazo ?? 0)
+      .map((c) => codigosStore.find(c.codigo, "permanente")?.prazo ?? 0)
       .filter((p) => p > 0);
     return prazos.length ? Math.max(...prazos) : 0;
   }, [codigos]);
@@ -69,7 +69,7 @@ function GeradorPage() {
   function setCodigo(i: number, codigo: string) {
     const next = [...codigos];
     next[i] = { ...next[i], codigo };
-    const found = codigosStore.find(codigo);
+    const found = codigosStore.find(codigo, "permanente");
     if (found) next[i].descricao = found.descricao;
     setCodigos(next);
   }
