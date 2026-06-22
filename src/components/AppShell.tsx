@@ -1,7 +1,28 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FileText, Tags, Search, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { FileText, Tags, Search, Moon, Sun, type LucideIcon } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
+
+const THEME_KEY = "tre_theme";
+type Theme = "light" | "dark";
+
+function useTheme(): [Theme, () => void] {
+  const [theme, setTheme] = useState<Theme>("light");
+  useEffect(() => {
+    const saved = (localStorage.getItem(THEME_KEY) as Theme | null) ?? "light";
+    setTheme(saved);
+    document.documentElement.classList.toggle("dark", saved === "dark");
+  }, []);
+  const toggle = () => {
+    setTheme((prev) => {
+      const next: Theme = prev === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      document.documentElement.classList.toggle("dark", next === "dark");
+      return next;
+    });
+  };
+  return [theme, toggle];
+}
 
 const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
   { to: "/gerador", label: "Etiquetas - Guarda Permanente", short: "Permanente", icon: Tags },
@@ -12,6 +33,7 @@ const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const [theme, toggleTheme] = useTheme();
   return (
     <div className="min-h-screen flex flex-col">
       <div className="app-bg no-print"><span /></div>
@@ -32,6 +54,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               </p>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+            title={theme === "dark" ? "Tema claro" : "Tema escuro"}
+            className="h-10 w-10 rounded-xl glass-input grid place-items-center hover:bg-white/80 transition text-foreground"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <div className="hidden sm:flex items-center">
             <TreLogo size={52} />
           </div>
