@@ -43,15 +43,16 @@ function CodigosPage() {
     );
   }, [list, q]);
 
-  const builtinCount = list.filter((c) => c.builtin).length;
-  const userCount = list.length - builtinCount;
+  const gpCount = list.filter((c) => c.origem === "GP").length;
+  const giCount = list.filter((c) => c.origem === "GI").length;
+  const userCount = list.filter((c) => c.origem === "USER").length;
 
   return (
     <div className="space-y-4">
       <header className="glass rounded-2xl p-5">
         <h2 className="text-xl font-semibold tracking-tight">Cadastro de Códigos</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          {builtinCount} códigos padrão (Tabela de Temporalidade GP) + {userCount} personalizados.
+          {gpCount} códigos padrão (GP) + {giCount} códigos padrão (GI) + {userCount} personalizados.
           O <b>prazo</b> é usado para calcular automaticamente o Prazo Final na etiqueta (Ano + Prazo).
         </p>
       </header>
@@ -113,11 +114,13 @@ function CodigosPage() {
                     </td>
                     <td className="px-5 py-2">
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                        c.builtin
+                        c.origem === "GP"
                           ? "bg-primary/10 text-primary"
+                          : c.origem === "GI"
+                          ? "bg-emerald-500/15 text-emerald-700"
                           : "bg-amber-500/15 text-amber-700"
                       }`}>
-                        {c.builtin ? "Padrão" : "Personalizado"}
+                        {c.origem === "GP" ? "Padrão GP" : c.origem === "GI" ? "Padrão GI" : "Personalizado"}
                       </span>
                     </td>
                     <td className="px-5 py-2 text-right">

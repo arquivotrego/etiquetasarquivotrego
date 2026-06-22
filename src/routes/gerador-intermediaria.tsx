@@ -26,7 +26,7 @@ function GeradorIntermediariaPage() {
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
   ]);
-  const [cadastrados, setCadastrados] = useState(codigosStore.list());
+  const [cadastrados, setCadastrados] = useState(codigosStore.list("intermediaria"));
   const finalManuallyEdited = useRef(false);
 
   useEffect(() => {
@@ -43,14 +43,14 @@ function GeradorIntermediariaPage() {
   }, [edit]);
 
   useEffect(() => {
-    const h = () => setCadastrados(codigosStore.list());
+    const h = () => setCadastrados(codigosStore.list("intermediaria"));
     window.addEventListener("tre-storage", h);
     return () => window.removeEventListener("tre-storage", h);
   }, []);
 
   const somaPrazo = useMemo(() => {
     const prazos = codigos
-      .map((c) => codigosStore.find(c.codigo)?.prazo ?? 0)
+      .map((c) => codigosStore.find(c.codigo, "intermediaria")?.prazo ?? 0)
       .filter((p) => p > 0);
     return prazos.length ? Math.max(...prazos) : 0;
   }, [codigos]);
@@ -66,7 +66,7 @@ function GeradorIntermediariaPage() {
   function setCodigo(i: number, codigo: string) {
     const next = [...codigos];
     next[i] = { ...next[i], codigo };
-    const found = codigosStore.find(codigo);
+    const found = codigosStore.find(codigo, "intermediaria");
     if (found) next[i].descricao = found.descricao;
     setCodigos(next);
   }
