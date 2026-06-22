@@ -33,6 +33,7 @@ const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const [theme, toggleTheme] = useTheme();
   return (
     <div className="min-h-screen flex flex-col">
       <div className="app-bg no-print"><span /></div>
@@ -53,6 +54,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               </p>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+            title={theme === "dark" ? "Tema claro" : "Tema escuro"}
+            className="h-10 w-10 rounded-xl glass-input grid place-items-center hover:bg-white/80 transition text-foreground"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <div className="hidden sm:flex items-center">
             <TreLogo size={52} />
           </div>
