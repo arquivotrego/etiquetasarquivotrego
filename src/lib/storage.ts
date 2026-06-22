@@ -1,6 +1,15 @@
 import { TEMPORALIDADE_GP } from "./temporalidade";
+import { TEMPORALIDADE_GI } from "./temporalidade-gi";
 
-export type Codigo = { id: string; codigo: string; descricao: string; prazo?: number; builtin?: boolean };
+export type Origem = "GP" | "GI" | "USER";
+export type Codigo = {
+  id: string;
+  codigo: string;
+  descricao: string;
+  prazo?: number;
+  builtin?: boolean;
+  origem?: Origem;
+};
 export type TipoEtiqueta = "permanente" | "intermediaria";
 export type Etiqueta = {
   id: string;
@@ -33,32 +42,42 @@ function write<T>(key: string, value: T) {
   window.dispatchEvent(new CustomEvent("tre-storage", { detail: { key } }));
 }
 
-const BUILTIN: Codigo[] = TEMPORALIDADE_GP.map((t) => ({
-  id: `builtin-${t.codigo}`,
+const BUILTIN_GP: Codigo[] = TEMPORALIDADE_GP.map((t) => ({
+  id: `builtin-gp-${t.codigo}`,
   codigo: t.codigo,
   descricao: t.descricao,
   prazo: t.prazo,
   builtin: true,
+  origem: "GP",
+}));
+const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
+  id: `builtin-gi-${t.codigo}`,
+  codigo: t.codigo,
+  descricao: t.descricao,
+  prazo: t.prazo,
+  builtin: true,
+  origem: "GI",
 }));
 
 function readUser(): Codigo[] {
-  return read<Codigo[]>(KEY_CODIGOS, []);
+  return read<Codigo[]>(KEY_CODIGOS, []).map((c) => ({ ...c, origem: "USER" as Origem }));
+}
+
+function builtinsFor(tipo?: TipoEtiqueta): Codigo[] {
+  if (tipo === "intermediaria") return BUILTIN_GI;
+  if (tipo === "permanente") return BUILTIN_GP;
+  return [...BUILTIN_GP, ...BUILTIN_GI];
 }
 
 export const codigosStore = {
-  list: (): Codigo[] => {
+  list: (tipo?: TipoEtiqueta): Codigo[] => {
     const user = readUser();
-    const userCodes = new Set(user.map((c) => c.codigo));
-    // Builtins come first (override removed only if user redefines with same code)
-    const merged = [
-      ...BUILTIN.filter((b) => !userCodes.has(b.codigo)),
-      ...user,
-    ];
+    const merged = [...builtinsFor(tipo), ...user];
     return merged.sort((a, b) => a.codigo.localeCompare(b.codigo, "pt-BR", { numeric: true }));
   },
   listUser: () => readUser(),
   add: (codigo: string, descricao: string, prazo?: number) => {
-    const list = readUser();
+    const list = read<Codigo[]>(KEY_CODIGOS, []);
     const exists = list.find((c) => c.codigo === codigo);
     if (exists) {
       exists.descricao = descricao;
@@ -71,14 +90,14 @@ export const codigosStore = {
     return item;
   },
   remove: (id: string) => {
-    write(KEY_CODIGOS, readUser().filter((c) => c.id !== id));
+    write(KEY_CODIGOS, read<Codigo[]>(KEY_CODIGOS, []).filter((c) => c.id !== id));
   },
-  find: (codigo: string): Codigo | undefined => {
+  find: (codigo: string, tipo?: TipoEtiqueta): Codigo | undefined => {
     const code = codigo.trim();
     if (!code) return undefined;
     const user = readUser().find((c) => c.codigo.trim() === code);
     if (user) return user;
-    return BUILTIN.find((b) => b.codigo === code);
+    return builtinsFor(tipo).find((b) => b.codigo === code);
   },
 };
 
