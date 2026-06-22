@@ -1,7 +1,28 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FileText, Tags, Search, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { FileText, Tags, Search, Moon, Sun, type LucideIcon } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
+
+const THEME_KEY = "tre_theme";
+type Theme = "light" | "dark";
+
+function useTheme(): [Theme, () => void] {
+  const [theme, setTheme] = useState<Theme>("light");
+  useEffect(() => {
+    const saved = (localStorage.getItem(THEME_KEY) as Theme | null) ?? "light";
+    setTheme(saved);
+    document.documentElement.classList.toggle("dark", saved === "dark");
+  }, []);
+  const toggle = () => {
+    setTheme((prev) => {
+      const next: Theme = prev === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      document.documentElement.classList.toggle("dark", next === "dark");
+      return next;
+    });
+  };
+  return [theme, toggle];
+}
 
 const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
   { to: "/gerador", label: "Etiquetas - Guarda Permanente", short: "Permanente", icon: Tags },
