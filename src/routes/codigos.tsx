@@ -114,11 +114,13 @@ function CodigosPage() {
                     </td>
                     <td className="px-5 py-2">
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                        c.builtin
+                        c.origem === "GP"
                           ? "bg-primary/10 text-primary"
+                          : c.origem === "GI"
+                          ? "bg-emerald-500/15 text-emerald-700"
                           : "bg-amber-500/15 text-amber-700"
                       }`}>
-                        {c.builtin ? "Padrão" : "Personalizado"}
+                        {c.origem === "GP" ? "Padrão GP" : c.origem === "GI" ? "Padrão GI" : "Personalizado"}
                       </span>
                     </td>
                     <td className="px-5 py-2 text-right">
