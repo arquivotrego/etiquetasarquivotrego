@@ -49,12 +49,11 @@ function GeradorPage() {
     return () => window.removeEventListener("tre-storage", h);
   }, []);
 
-  // Soma de prazos: usa o maior prazo dos códigos selecionados
+  // Soma de prazos: soma todos os prazos dos códigos selecionados
   const somaPrazo = useMemo(() => {
-    const prazos = codigos
+    return codigos
       .map((c) => codigosStore.find(c.codigo, "permanente")?.prazo ?? 0)
-      .filter((p) => p > 0);
-    return prazos.length ? Math.max(...prazos) : 0;
+      .reduce((a, b) => a + b, 0);
   }, [codigos]);
 
   // Auto-calcula prazo final = ano + soma
