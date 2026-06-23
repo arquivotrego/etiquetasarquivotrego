@@ -7,9 +7,9 @@ const THEME_KEY = "tre_theme";
 type Theme = "light" | "dark";
 
 function useTheme(): [Theme, () => void] {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   useEffect(() => {
-    const saved = (localStorage.getItem(THEME_KEY) as Theme | null) ?? "light";
+    const saved = (localStorage.getItem(THEME_KEY) as Theme | null) ?? "dark";
     setTheme(saved);
     document.documentElement.classList.toggle("dark", saved === "dark");
   }, []);
