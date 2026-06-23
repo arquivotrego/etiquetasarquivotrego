@@ -59,8 +59,19 @@ const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
   origem: "GI",
 }));
 
+const BUILTIN_CODES = new Set<string>([
+  ...BUILTIN_GP.map((c) => c.codigo),
+  ...BUILTIN_GI.map((c) => c.codigo),
+]);
+
 function readUser(): Codigo[] {
-  return read<Codigo[]>(KEY_CODIGOS, []).map((c) => ({ ...c, origem: "USER" as Origem }));
+  const raw = read<Codigo[]>(KEY_CODIGOS, []);
+  // Remove códigos personalizados que duplicam algum código dos PDFs (GP/GI)
+  const filtered = raw.filter((c) => !BUILTIN_CODES.has(c.codigo.trim()));
+  if (typeof window !== "undefined" && filtered.length !== raw.length) {
+    localStorage.setItem(KEY_CODIGOS, JSON.stringify(filtered));
+  }
+  return filtered.map((c) => ({ ...c, origem: "USER" as Origem }));
 }
 
 function builtinsFor(tipo?: TipoEtiqueta): Codigo[] {
