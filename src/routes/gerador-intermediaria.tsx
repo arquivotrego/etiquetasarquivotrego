@@ -49,10 +49,9 @@ function GeradorIntermediariaPage() {
   }, []);
 
   const somaPrazo = useMemo(() => {
-    const prazos = codigos
+    return codigos
       .map((c) => codigosStore.find(c.codigo, "intermediaria")?.prazo ?? 0)
-      .filter((p) => p > 0);
-    return prazos.length ? Math.max(...prazos) : 0;
+      .reduce((a, b) => a + b, 0);
   }, [codigos]);
 
   useEffect(() => {
