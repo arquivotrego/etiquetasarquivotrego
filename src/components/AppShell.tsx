@@ -74,7 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <aside className="no-print w-60 shrink-0 hidden md:block">
           <nav className="glass rounded-2xl p-3 sticky top-24 space-y-1">
             {nav.map((item) => {
-              const active = path.startsWith(item.to);
+              const active = path === item.to || path.startsWith(item.to + "/");
               return (
                 <Link
                   key={item.to}
@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="md:hidden fixed bottom-3 left-3 right-3 z-30 no-print">
           <div className="glass-strong rounded-2xl p-2 flex justify-around">
             {nav.map((item) => {
-              const active = path.startsWith(item.to);
+              const active = path === item.to || path.startsWith(item.to + "/");
               return (
                 <Link
                   key={item.to}
