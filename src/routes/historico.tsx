@@ -140,10 +140,11 @@ function HistoricoPage() {
       </header>
 
       {/* Tabs por categoria */}
-      <div className="glass rounded-2xl p-2 flex gap-2">
+      <div className="glass rounded-2xl p-2 flex gap-2 flex-wrap">
         {([
           { key: "permanente", label: "Guarda Permanente" },
           { key: "intermediaria", label: "Guarda Intermediária" },
+          { key: "historico", label: "Histórico - Permanente" },
         ] as { key: TipoEtiqueta; label: string }[]).map((t) => {
           const active = tab === t.key;
           return (
