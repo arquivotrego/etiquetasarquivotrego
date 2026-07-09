@@ -306,7 +306,13 @@ function HistoricoPage() {
                     Ver
                   </button>
                   <Link
-                    to={(e.tipo ?? "permanente") === "intermediaria" ? "/gerador-intermediaria" : "/gerador"}
+                    to={
+                      e.tipo === "intermediaria"
+                        ? "/gerador-intermediaria"
+                        : e.tipo === "historico"
+                        ? "/gerador-historico"
+                        : "/gerador"
+                    }
                     search={{ edit: e.id }}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
                   >
