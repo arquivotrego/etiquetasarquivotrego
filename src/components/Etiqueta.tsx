@@ -11,6 +11,7 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
 
   const tipo = data.tipo ?? "permanente";
   const isInter = tipo === "intermediaria";
+  const isHistorico = tipo === "historico";
   const guardaLabel = isInter ? (
     <>GUARDA<br/>INTERMEDIÁRIA</>
   ) : (
@@ -26,7 +27,7 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
         </div>
         <div className="et-meta">
           <div className="et-meta-row et-ano">
-            ANO DE PRODUÇÃO&nbsp;&nbsp;{data.ano || ""}
+            {isHistorico ? "HISTÓRICO" : <>ANO DE PRODUÇÃO&nbsp;&nbsp;{data.ano || ""}</>}
           </div>
           <div className="et-meta-row et-split">
             <div className="et-half">DESTINO</div>
@@ -38,6 +39,7 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
           </div>
         </div>
       </div>
+
 
       {/* Gray title bands */}
       <div className="et-band">TRIBUNAL REGIONAL ELEITORAL DE GOIÁS</div>

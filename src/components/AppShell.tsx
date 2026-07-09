@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FileText, Tags, Search, Moon, Sun, type LucideIcon } from "lucide-react";
+import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, type LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
 
@@ -27,8 +27,10 @@ function useTheme(): [Theme, () => void] {
 const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
   { to: "/gerador", label: "Etiquetas - Guarda Permanente", short: "Permanente", icon: Tags },
   { to: "/gerador-intermediaria", label: "Etiquetas - Guarda Intermediária", short: "Intermediária", icon: Tags },
+  { to: "/gerador-historico", label: "Gerador - Histórico - Permanente", short: "Histórico", icon: Archive },
+  { to: "/certidoes", label: "Gerador de Certidões", short: "Certidões", icon: ScrollText },
   { to: "/codigos", label: "Cadastro de Códigos", short: "Códigos", icon: FileText },
-  { to: "/historico", label: "Histórico & Impressão", short: "Histórico", icon: Search },
+  { to: "/historico", label: "Histórico & Impressão", short: "Impressão", icon: Search },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

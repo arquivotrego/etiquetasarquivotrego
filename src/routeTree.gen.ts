@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ImprimirRouteImport } from './routes/imprimir'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as GeradorIntermediariaRouteImport } from './routes/gerador-intermediaria'
+import { Route as GeradorHistoricoRouteImport } from './routes/gerador-historico'
 import { Route as GeradorRouteImport } from './routes/gerador'
 import { Route as CodigosRouteImport } from './routes/codigos'
+import { Route as CertidoesRouteImport } from './routes/certidoes'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ImprimirRoute = ImprimirRouteImport.update({
@@ -31,6 +33,11 @@ const GeradorIntermediariaRoute = GeradorIntermediariaRouteImport.update({
   path: '/gerador-intermediaria',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GeradorHistoricoRoute = GeradorHistoricoRouteImport.update({
+  id: '/gerador-historico',
+  path: '/gerador-historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GeradorRoute = GeradorRouteImport.update({
   id: '/gerador',
   path: '/gerador',
@@ -41,6 +48,11 @@ const CodigosRoute = CodigosRouteImport.update({
   path: '/codigos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertidoesRoute = CertidoesRouteImport.update({
+  id: '/certidoes',
+  path: '/certidoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,16 +61,20 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
@@ -66,8 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
@@ -76,24 +94,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
   id:
     | '__root__'
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
@@ -101,8 +125,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CertidoesRoute: typeof CertidoesRoute
   CodigosRoute: typeof CodigosRoute
   GeradorRoute: typeof GeradorRoute
+  GeradorHistoricoRoute: typeof GeradorHistoricoRoute
   GeradorIntermediariaRoute: typeof GeradorIntermediariaRoute
   HistoricoRoute: typeof HistoricoRoute
   ImprimirRoute: typeof ImprimirRoute
@@ -131,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GeradorIntermediariaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gerador-historico': {
+      id: '/gerador-historico'
+      path: '/gerador-historico'
+      fullPath: '/gerador-historico'
+      preLoaderRoute: typeof GeradorHistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gerador': {
       id: '/gerador'
       path: '/gerador'
@@ -145,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CodigosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certidoes': {
+      id: '/certidoes'
+      path: '/certidoes'
+      fullPath: '/certidoes'
+      preLoaderRoute: typeof CertidoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -157,8 +197,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CertidoesRoute: CertidoesRoute,
   CodigosRoute: CodigosRoute,
   GeradorRoute: GeradorRoute,
+  GeradorHistoricoRoute: GeradorHistoricoRoute,
   GeradorIntermediariaRoute: GeradorIntermediariaRoute,
   HistoricoRoute: HistoricoRoute,
   ImprimirRoute: ImprimirRoute,

@@ -10,7 +10,7 @@ export type Codigo = {
   builtin?: boolean;
   origem?: Origem;
 };
-export type TipoEtiqueta = "permanente" | "intermediaria";
+export type TipoEtiqueta = "permanente" | "intermediaria" | "historico";
 export type Etiqueta = {
   id: string;
   ano: string;

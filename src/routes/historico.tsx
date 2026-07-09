@@ -90,6 +90,7 @@ function HistoricoPage() {
   const counts = {
     permanente: list.filter((e) => (e.tipo ?? "permanente") === "permanente").length,
     intermediaria: list.filter((e) => e.tipo === "intermediaria").length,
+    historico: list.filter((e) => e.tipo === "historico").length,
   };
 
   function clearFilters() {
@@ -139,10 +140,11 @@ function HistoricoPage() {
       </header>
 
       {/* Tabs por categoria */}
-      <div className="glass rounded-2xl p-2 flex gap-2">
+      <div className="glass rounded-2xl p-2 flex gap-2 flex-wrap">
         {([
           { key: "permanente", label: "Guarda Permanente" },
           { key: "intermediaria", label: "Guarda Intermediária" },
+          { key: "historico", label: "Histórico - Permanente" },
         ] as { key: TipoEtiqueta; label: string }[]).map((t) => {
           const active = tab === t.key;
           return (
@@ -304,7 +306,13 @@ function HistoricoPage() {
                     Ver
                   </button>
                   <Link
-                    to={(e.tipo ?? "permanente") === "intermediaria" ? "/gerador-intermediaria" : "/gerador"}
+                    to={
+                      e.tipo === "intermediaria"
+                        ? "/gerador-intermediaria"
+                        : e.tipo === "historico"
+                        ? "/gerador-historico"
+                        : "/gerador"
+                    }
                     search={{ edit: e.id }}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
                   >
