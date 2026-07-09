@@ -15,6 +15,7 @@ import { Route as GeradorIntermediariaRouteImport } from './routes/gerador-inter
 import { Route as GeradorHistoricoRouteImport } from './routes/gerador-historico'
 import { Route as GeradorRouteImport } from './routes/gerador'
 import { Route as CodigosRouteImport } from './routes/codigos'
+import { Route as CertidoesRouteImport } from './routes/certidoes'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ImprimirRoute = ImprimirRouteImport.update({
@@ -47,6 +48,11 @@ const CodigosRoute = CodigosRouteImport.update({
   path: '/codigos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertidoesRoute = CertidoesRouteImport.update({
+  id: '/certidoes',
+  path: '/certidoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/certidoes': typeof CertidoesRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
     | '/gerador-historico'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
     | '/gerador-historico'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/certidoes'
     | '/codigos'
     | '/gerador'
     | '/gerador-historico'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CertidoesRoute: typeof CertidoesRoute
   CodigosRoute: typeof CodigosRoute
   GeradorRoute: typeof GeradorRoute
   GeradorHistoricoRoute: typeof GeradorHistoricoRoute
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CodigosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certidoes': {
+      id: '/certidoes'
+      path: '/certidoes'
+      fullPath: '/certidoes'
+      preLoaderRoute: typeof CertidoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CertidoesRoute: CertidoesRoute,
   CodigosRoute: CodigosRoute,
   GeradorRoute: GeradorRoute,
   GeradorHistoricoRoute: GeradorHistoricoRoute,
