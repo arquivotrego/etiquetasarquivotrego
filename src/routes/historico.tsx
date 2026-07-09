@@ -90,6 +90,7 @@ function HistoricoPage() {
   const counts = {
     permanente: list.filter((e) => (e.tipo ?? "permanente") === "permanente").length,
     intermediaria: list.filter((e) => e.tipo === "intermediaria").length,
+    historico: list.filter((e) => e.tipo === "historico").length,
   };
 
   function clearFilters() {
