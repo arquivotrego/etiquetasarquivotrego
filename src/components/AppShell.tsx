@@ -40,31 +40,33 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Header */}
       <header className="no-print sticky top-0 z-30">
-        <div className="glass-strong mx-3 mt-3 rounded-2xl px-5 py-3 flex items-center gap-4">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="glass-strong mx-3 mt-3 rounded-2xl px-5 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="h-11 w-11 rounded-xl bg-white/70 grid place-items-center shadow-inner">
               <TreLogo size={36} />
             </div>
-            <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-semibold tracking-tight text-foreground truncate">
-                Sistema de Etiquetas — Arquivo Morto
-              </h1>
-              <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
-                Tribunal Regional Eleitoral de Goiás · SEDOC
-              </p>
-            </div>
           </div>
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-            title={theme === "dark" ? "Tema claro" : "Tema escuro"}
-            className="h-10 w-10 rounded-xl glass-input grid place-items-center hover:bg-white/80 transition text-foreground"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
-          <div className="hidden sm:flex items-center">
-            <TreLogo size={52} />
+          <div className="min-w-0 text-center">
+            <h1 className="text-base sm:text-lg font-semibold tracking-tight text-foreground truncate">
+              GERADOR DE ETIQUETAS PARA ARQUIVO
+            </h1>
+            <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
+              Tribunal Regional Eleitoral de Goiás · SEDOC
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              title={theme === "dark" ? "Tema claro" : "Tema escuro"}
+              className="h-10 w-10 rounded-xl glass-input grid place-items-center hover:bg-white/80 transition text-foreground"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            <div className="hidden sm:flex items-center">
+              <TreLogo size={52} />
+            </div>
           </div>
         </div>
       </header>
