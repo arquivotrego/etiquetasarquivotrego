@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ImprimirRouteImport } from './routes/imprimir'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as GeradorIntermediariaRouteImport } from './routes/gerador-intermediaria'
+import { Route as GeradorHistoricoRouteImport } from './routes/gerador-historico'
 import { Route as GeradorRouteImport } from './routes/gerador'
 import { Route as CodigosRouteImport } from './routes/codigos'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const HistoricoRoute = HistoricoRouteImport.update({
 const GeradorIntermediariaRoute = GeradorIntermediariaRouteImport.update({
   id: '/gerador-intermediaria',
   path: '/gerador-intermediaria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeradorHistoricoRoute = GeradorHistoricoRouteImport.update({
+  id: '/gerador-historico',
+  path: '/gerador-historico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GeradorRoute = GeradorRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/codigos': typeof CodigosRoute
   '/gerador': typeof GeradorRoute
+  '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/codigos'
     | '/gerador'
+    | '/gerador-historico'
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CodigosRoute: typeof CodigosRoute
   GeradorRoute: typeof GeradorRoute
+  GeradorHistoricoRoute: typeof GeradorHistoricoRoute
   GeradorIntermediariaRoute: typeof GeradorIntermediariaRoute
   HistoricoRoute: typeof HistoricoRoute
   ImprimirRoute: typeof ImprimirRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/gerador-intermediaria'
       fullPath: '/gerador-intermediaria'
       preLoaderRoute: typeof GeradorIntermediariaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gerador-historico': {
+      id: '/gerador-historico'
+      path: '/gerador-historico'
+      fullPath: '/gerador-historico'
+      preLoaderRoute: typeof GeradorHistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gerador': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CodigosRoute: CodigosRoute,
   GeradorRoute: GeradorRoute,
+  GeradorHistoricoRoute: GeradorHistoricoRoute,
   GeradorIntermediariaRoute: GeradorIntermediariaRoute,
   HistoricoRoute: HistoricoRoute,
   ImprimirRoute: ImprimirRoute,
