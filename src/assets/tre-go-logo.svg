@@ -19,7 +19,7 @@
       }
 
       .cls-5 {
-        fill: #ffffff;
+        fill: currentColor;
       }
 
       .cls-4 {
