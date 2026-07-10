@@ -4,6 +4,7 @@ import { Calendar as CalendarIcon, Plus, Printer } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import logoUrl from "@/assets/tre-go-logo.png";
 
 export const Route = createFileRoute("/certidoes")({
   head: () => ({ meta: [{ title: "Gerador de Certidões — TRE-GO" }] }),
@@ -237,6 +238,7 @@ function CertidoesPage() {
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1">Pré-visualização</div>
           <div ref={printRef} className="print-area">
             <div className="print-page certidao">
+              <div className="cert-logo"><img src={logoUrl} alt="TRE-GO" /></div>
               <h1 className="cert-title">CERTIDÃO</h1>
               <div className="cert-spacer" />
               <p className="cert-body">
@@ -289,6 +291,8 @@ function CertidoesPage() {
           max-width: 100%;
           text-align: justify;
         }
+        .certidao .cert-logo { text-align: center; margin: 0 0 1cm 0; }
+        .certidao .cert-logo img { display: inline-block; height: 2.5cm; width: auto; }
         .certidao .cert-title {
           text-align: center;
           font-weight: 700;
