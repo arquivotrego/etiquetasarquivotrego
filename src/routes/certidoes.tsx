@@ -238,6 +238,7 @@ function CertidoesPage() {
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1">Pré-visualização</div>
           <div ref={printRef} className="print-area">
             <div className="print-page certidao">
+              <div className="cert-logo"><img src={logoUrl} alt="TRE-GO" /></div>
               <h1 className="cert-title">CERTIDÃO</h1>
               <div className="cert-spacer" />
               <p className="cert-body">
