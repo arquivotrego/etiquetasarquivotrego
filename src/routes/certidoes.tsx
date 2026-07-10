@@ -4,6 +4,7 @@ import { Calendar as CalendarIcon, Plus, Printer } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import logoUrl from "@/assets/tre-go-logo.png";
 
 export const Route = createFileRoute("/certidoes")({
   head: () => ({ meta: [{ title: "Gerador de Certidões — TRE-GO" }] }),
