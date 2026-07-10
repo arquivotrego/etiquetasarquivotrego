@@ -10,7 +10,7 @@ export const Route = createFileRoute("/gerador")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     edit: typeof s.edit === "string" ? s.edit : undefined,
   }),
-  head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Permanente — TRE-GO" }] }),
+  head: () => ({ meta: [{ title: "Gerador - ADM - Permanente — TRE-GO" }] }),
   component: GeradorPage,
 });
 
