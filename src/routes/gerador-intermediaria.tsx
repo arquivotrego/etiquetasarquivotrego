@@ -10,7 +10,7 @@ export const Route = createFileRoute("/gerador-intermediaria")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     edit: typeof s.edit === "string" ? s.edit : undefined,
   }),
-  head: () => ({ meta: [{ title: "Gerador de Etiquetas - ADM - Guarda Intermediária — TRE-GO" }] }),
+  head: () => ({ meta: [{ title: "Gerador - ADM - Intermediário — TRE-GO" }] }),
   component: GeradorIntermediariaPage,
 });
 
