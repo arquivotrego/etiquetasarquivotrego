@@ -291,6 +291,8 @@ function CertidoesPage() {
           max-width: 100%;
           text-align: justify;
         }
+        .certidao .cert-logo { text-align: center; margin: 0 0 1cm 0; }
+        .certidao .cert-logo img { display: inline-block; height: 2.5cm; width: auto; }
         .certidao .cert-title {
           text-align: center;
           font-weight: 700;
