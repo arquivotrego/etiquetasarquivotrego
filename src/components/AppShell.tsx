@@ -25,12 +25,12 @@ function useTheme(): [Theme, () => void] {
 }
 
 const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
-  { to: "/gerador", label: "Etiquetas - Guarda Permanente", short: "Permanente", icon: Tags },
-  { to: "/gerador-intermediaria", label: "Etiquetas - Guarda Intermediária", short: "Intermediária", icon: Tags },
-  { to: "/gerador-historico", label: "Gerador - Histórico - Permanente", short: "Histórico", icon: Archive },
-  { to: "/certidoes", label: "Gerador de Certidões", short: "Certidões", icon: ScrollText },
-  { to: "/codigos", label: "Cadastro de Códigos", short: "Códigos", icon: FileText },
-  { to: "/historico", label: "Histórico & Impressão", short: "Impressão", icon: Search },
+  { to: "/gerador", label: "GERADOR - ADM - PERMANENTE", short: "PERMANENTE", icon: Tags },
+  { to: "/gerador-intermediaria", label: "GERADOR - ADM - INTERMEDIÁRIO", short: "INTERMEDIÁRIO", icon: Tags },
+  { to: "/gerador-historico", label: "GERADOR - HISTÓRICO - PERMANENTE", short: "HISTÓRICO", icon: Archive },
+  { to: "/certidoes", label: "GERADOR DE CERTIDÕES", short: "CERTIDÕES", icon: ScrollText },
+  { to: "/codigos", label: "CADASTRO DE CÓDIGOS", short: "CÓDIGOS", icon: FileText },
+  { to: "/historico", label: "HISTÓRICO & IMPRESSÃO", short: "IMPRESSÃO", icon: Search },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
