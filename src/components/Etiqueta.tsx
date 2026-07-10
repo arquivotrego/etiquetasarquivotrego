@@ -31,7 +31,7 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
           </div>
           <div className="et-meta-row et-split">
             <div className="et-half">DESTINO</div>
-            <div className="et-half">{isInter ? "ELIMINAÇÃO" : isHistorico ? "ANO(s) do(s) documentos" : "FINAL"}</div>
+            <div className="et-half">{isInter ? "ELIMINAÇÃO" : isHistorico ? "ANO(S) DO(S) DOCUMENTOS" : "FINAL"}</div>
           </div>
           <div className="et-meta-row et-split et-guarda">
             <div className="et-half">{guardaLabel}</div>
