@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
 import { Save, Printer } from "lucide-react";
