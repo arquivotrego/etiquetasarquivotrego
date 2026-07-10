@@ -112,7 +112,7 @@ function GeradorIntermediariaPage() {
       <div className="space-y-4">
         <header className="glass rounded-2xl p-5">
           <h2 className="text-xl font-semibold tracking-tight">
-            {edit ? "EDITAR ETIQUETA - GUARDA INTERMEDIÁRIA" : "GERADOR DE ETIQUETAS - ADM - GUARDA INTERMEDIÁRIA"}
+            {edit ? "EDITAR ETIQUETA - GUARDA INTERMEDIÁRIA" : "GERADOR - ADM - INTERMEDIÁRIO"}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Preencha os dados — o <b>Prazo Final</b> é calculado automaticamente pelo Ano de Produção + Soma dos prazos do código.
