@@ -51,6 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="min-w-0 text-center">
             <h1 className="text-base sm:text-lg font-semibold tracking-tight text-foreground truncate">
               GERADOR DE ETIQUETAS PARA ARQUIVO
+
             </h1>
             <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
               Tribunal Regional Eleitoral de Goiás · SEDOC
