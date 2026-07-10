@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
 import { Save, Printer } from "lucide-react";
@@ -106,8 +107,25 @@ function GeradorPage() {
     } else {
       savedId = etiquetasStore.add(payload).id;
     }
-    if (printAfter) navigate({ to: "/imprimir", search: { ids: savedId } });
-    else navigate({ to: "/historico" });
+    if (printAfter) {
+      navigate({ to: "/imprimir", search: { ids: savedId } });
+    } else {
+      toast.success(edit ? "Etiqueta atualizada com sucesso" : "Etiqueta criada com sucesso", {
+        description: "Acesse HISTÓRICO & IMPRESSÃO para visualizar.",
+      });
+      if (!edit) {
+        setAno("");
+        setFinal("");
+        setVaga("");
+        setCodigos([
+          { codigo: "", descricao: "" },
+          { codigo: "", descricao: "" },
+          { codigo: "", descricao: "" },
+          { codigo: "", descricao: "" },
+        ]);
+        finalManuallyEdited.current = false;
+      }
+    }
   }
 
   return (

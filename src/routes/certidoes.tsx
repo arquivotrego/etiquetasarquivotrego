@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar as CalendarIcon, Plus, Printer } from "lucide-react";
+import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -224,7 +225,10 @@ function CertidoesPage() {
             <button
               type="button"
               disabled={!canRender}
-              onClick={() => window.print()}
+              onClick={() => {
+                toast.success("Certidão gerada com sucesso");
+                window.print();
+              }}
               className="h-11 px-5 rounded-xl bg-primary text-primary-foreground font-medium inline-flex items-center gap-2 shadow-md hover:opacity-90 disabled:opacity-40 transition"
             >
               <Printer className="h-4 w-4" /> Imprimir / Salvar PDF
