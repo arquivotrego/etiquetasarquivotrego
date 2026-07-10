@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, type LucideIcon } from "lucide-react";
+import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, Home, type LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
 
