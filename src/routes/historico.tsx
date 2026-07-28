@@ -116,7 +116,9 @@ function HistoricoPage() {
 
   return (
     <div className="space-y-4">
+      <div className="sticky top-24 z-20 space-y-3 pb-3">
       <header className="glass rounded-2xl p-5 flex flex-wrap gap-3 items-center justify-between">
+
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Histórico & Impressão</h2>
           <p className="text-sm text-muted-foreground mt-1">
