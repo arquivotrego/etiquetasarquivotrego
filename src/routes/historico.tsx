@@ -7,15 +7,16 @@ import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico"];
 
 export const Route = createFileRoute("/historico")({
-  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta } => ({
+  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string } => ({
     tipo: TIPOS.includes(s.tipo as TipoEtiqueta) ? (s.tipo as TipoEtiqueta) : undefined,
+    sel: typeof s.sel === "string" && s.sel ? s.sel : undefined,
   }),
   head: () => ({ meta: [{ title: "Histórico de Etiquetas — TRE-GO" }] }),
   component: HistoricoPage,
 });
 
 function HistoricoPage() {
-  const { tipo } = Route.useSearch();
+  const { tipo, sel } = Route.useSearch();
   const [list, setList] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
@@ -28,6 +29,10 @@ function HistoricoPage() {
       setSelected([]);
     }
   }, [tipo]);
+
+  useEffect(() => {
+    if (sel) setSelected(sel.split(","));
+  }, [sel]);
 
   // Filtros avançados
   const [showFilters, setShowFilters] = useState(false);
