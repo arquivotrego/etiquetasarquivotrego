@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as ImprimirRouteImport } from './routes/imprimir'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as GeradorIntermediariaRouteImport } from './routes/gerador-intermediaria'
@@ -18,6 +19,11 @@ import { Route as CodigosRouteImport } from './routes/codigos'
 import { Route as CertidoesRouteImport } from './routes/certidoes'
 import { Route as IndexRouteImport } from './routes/index'
 
+const MapaRoute = MapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImprimirRoute = ImprimirRouteImport.update({
   id: '/imprimir',
   path: '/imprimir',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
+  '/mapa': typeof MapaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
+  '/mapa': typeof MapaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
+  '/mapa': typeof MapaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
+    | '/mapa'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
+    | '/mapa'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/gerador-intermediaria'
     | '/historico'
     | '/imprimir'
+    | '/mapa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,10 +144,18 @@ export interface RootRouteChildren {
   GeradorIntermediariaRoute: typeof GeradorIntermediariaRoute
   HistoricoRoute: typeof HistoricoRoute
   ImprimirRoute: typeof ImprimirRoute
+  MapaRoute: typeof MapaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/mapa': {
+      id: '/mapa'
+      path: '/mapa'
+      fullPath: '/mapa'
+      preLoaderRoute: typeof MapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/imprimir': {
       id: '/imprimir'
       path: '/imprimir'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   GeradorIntermediariaRoute: GeradorIntermediariaRoute,
   HistoricoRoute: HistoricoRoute,
   ImprimirRoute: ImprimirRoute,
+  MapaRoute: MapaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

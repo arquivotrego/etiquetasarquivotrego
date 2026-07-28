@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, Home, type LucideIcon } from "lucide-react";
+import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, Home, Grid3x3, type LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
 
@@ -31,6 +31,7 @@ const nav: { to: string; label: string; short: string; icon: LucideIcon }[] = [
   { to: "/gerador-historico", label: "GERADOR - HISTÓRICO - PERMANENTE", short: "HISTÓRICO", icon: Archive },
   { to: "/certidoes", label: "GERADOR DE CERTIDÕES", short: "CERTIDÕES", icon: ScrollText },
   { to: "/codigos", label: "CADASTRO DE CÓDIGOS", short: "CÓDIGOS", icon: FileText },
+  { to: "/mapa", label: "MAPA DE CAIXAS", short: "MAPA", icon: Grid3x3 },
   { to: "/historico", label: "HISTÓRICO & IMPRESSÃO", short: "IMPRESSÃO", icon: Search },
 ];
 

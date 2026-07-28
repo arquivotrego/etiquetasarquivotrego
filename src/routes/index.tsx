@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Tags, Archive, ScrollText, FileText, Search, type LucideIcon } from "lucide-react";
+import { Tags, Archive, ScrollText, FileText, Search, Grid3x3, type LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Home — Sistemas de Arquivo da SEDOC" }] }),
@@ -43,6 +43,12 @@ const cards: Card[] = [
     title: "CADASTRO DE CÓDIGOS",
     desc: "Cadastre e gerencie códigos da tabela de temporalidade.",
     icon: FileText,
+  },
+  {
+    to: "/mapa",
+    title: "MAPA DE ORGANIZAÇÃO DE CAIXAS",
+    desc: "Visualize corredores, estantes e vagas já etiquetadas.",
+    icon: Grid3x3,
   },
   {
     to: "/historico",
