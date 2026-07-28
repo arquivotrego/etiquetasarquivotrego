@@ -279,6 +279,9 @@ function HistoricoPage() {
           )}
         </div>
       )}
+      </div>
+
+
 
       {filtered.length === 0 ? (
         <div className="glass rounded-2xl p-10 text-center text-sm text-muted-foreground">
