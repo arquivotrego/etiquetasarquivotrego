@@ -1,9 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Save, Printer } from "lucide-react";
+import { Save, Printer, History } from "lucide-react";
 
 type Search = { edit?: string };
 
@@ -131,13 +131,22 @@ function GeradorPage() {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
       <div className="space-y-4">
-        <header className="glass rounded-2xl p-5">
+        <header className="glass rounded-2xl p-5 flex flex-wrap items-start justify-between gap-3">
+          <div>
           <h2 className="text-xl font-semibold tracking-tight">
             {edit ? "EDITAR ETIQUETA - GUARDA PERMANENTE" : "GERADOR - ADM - PERMANENTE"}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Preencha os dados — o <b>Prazo Final</b> é calculado automaticamente pelo Ano de Produção + Soma dos prazos do código.
           </p>
+</div>
+          <Link
+            to="/historico"
+            search={{ tipo: "permanente" }}
+            className="h-11 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-medium inline-flex items-center gap-2 shadow-md hover:opacity-90 transition shrink-0"
+          >
+            <History className="h-4 w-4" /> Histórico Permanente
+          </Link>
         </header>
 
         <div className="glass-strong rounded-2xl p-5 space-y-4">
