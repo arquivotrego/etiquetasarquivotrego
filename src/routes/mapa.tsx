@@ -58,8 +58,9 @@ function MapaPage() {
       <header className="glass rounded-2xl p-5">
         <h2 className="text-xl font-semibold tracking-tight">MAPA DE ORGANIZAÇÃO DE CAIXAS</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Cada bloco é uma estante. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> já
-          possuem etiqueta — clique para abrir no histórico já selecionada para impressão.
+          Cada bloco é uma estante. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-white ring-1 ring-black/20 align-middle" /> já
+          possuem etiqueta; com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> também estão digitalizadas —
+          clique para abrir no histórico já selecionada para impressão.
         </p>
       </header>
 
