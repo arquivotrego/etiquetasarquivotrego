@@ -203,16 +203,7 @@ function GeradorIntermediariaPage() {
             </datalist>
           </div>
 
-          <div className="flex flex-wrap gap-2 pt-2">
-            <button
-              type="button"
-              onClick={() => setDigitalizado((v) => !v)}
-              aria-pressed={digitalizado}
-              className={["h-11 px-4 rounded-xl font-medium inline-flex items-center gap-2 transition border", digitalizado ? "bg-emerald-500/20 border-emerald-500/60 text-foreground" : "glass-input border-transparent text-muted-foreground"].join(" ")}
-            >
-              <span className={["h-2.5 w-2.5 rounded-full", digitalizado ? "bg-emerald-500" : "bg-muted-foreground/40"].join(" ")} />
-              DIGITALIZADO: {digitalizado ? "ON" : "OFF"}
-            </button>
+          <div className="flex flex-wrap items-center gap-2 pt-2">
             <button
               disabled={!valid}
               onClick={() => gerar(false)}
@@ -227,6 +218,7 @@ function GeradorIntermediariaPage() {
             >
               <Printer className="h-4 w-4" /> Salvar e Imprimir
             </button>
+            <DigitalizadoSwitch checked={digitalizado} onChange={setDigitalizado} />
           </div>
         </div>
       </div>
