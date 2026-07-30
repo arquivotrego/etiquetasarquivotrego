@@ -98,7 +98,7 @@ function GeradorIntermediariaPage() {
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
       digitalizado,
-      tipo:  as const,
+      tipo: "intermediaria" as const,
     };
     let savedId: string;
     if (edit) {

@@ -101,7 +101,7 @@ function GeradorPage() {
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
       digitalizado,
-      tipo:  as const,
+      tipo: "permanente" as const,
     };
     let savedId: string;
     if (edit) {
