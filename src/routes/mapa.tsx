@@ -58,8 +58,9 @@ function MapaPage() {
       <header className="glass rounded-2xl p-5">
         <h2 className="text-xl font-semibold tracking-tight">MAPA DE ORGANIZAÇÃO DE CAIXAS</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Cada bloco é uma estante. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> já
-          possuem etiqueta — clique para abrir no histórico já selecionada para impressão.
+          Cada bloco é uma estante. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-white ring-1 ring-black/20 align-middle" /> já
+          possuem etiqueta; com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> também estão digitalizadas —
+          clique para abrir no histórico já selecionada para impressão.
         </p>
       </header>
 
@@ -86,7 +87,9 @@ function MapaPage() {
                     style={{ gridTemplateColumns: `repeat(${est.cols}, minmax(0, 1fr))` }}
                   >
                     {Array.from({ length: est.rows * est.cols }, (_, i) => est.start + i).map((n) => {
-                      const ocupada = porVaga.has(n);
+                      const et = porVaga.get(n);
+                      const ocupada = !!et;
+                      const digitalizada = !!et?.digitalizado;
                       const destaque = n === alvo;
                       return (
                         <button
@@ -94,7 +97,11 @@ function MapaPage() {
                           type="button"
                           onClick={() => abrirVaga(n)}
                           disabled={!ocupada}
-                          title={ocupada ? `Vaga ${n} — abrir no histórico` : `Vaga ${n} — livre`}
+                          title={
+                            ocupada
+                              ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : ""}abrir no histórico`
+                              : `Vaga ${n} — livre`
+                          }
                           className={[
                             "relative h-9 w-12 rounded-lg text-[11px] font-medium tabular-nums transition",
                             ocupada
@@ -105,7 +112,12 @@ function MapaPage() {
                         >
                           {n}
                           {ocupada && (
-                            <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            <span className="absolute top-1 right-1 flex items-center gap-0.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-white ring-1 ring-black/20" />
+                              {digitalizada && (
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                              )}
+                            </span>
                           )}
                         </button>
                       );

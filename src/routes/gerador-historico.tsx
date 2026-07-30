@@ -20,6 +20,7 @@ function GeradorHistoricoPage() {
   const { edit } = Route.useSearch();
   const [anoDocs, setAnoDocs] = useState("");
   const [vaga, setVaga] = useState("");
+  const [digitalizado, setDigitalizado] = useState(false);
   const [codigos, setCodigos] = useState([
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
@@ -34,6 +35,7 @@ function GeradorHistoricoPage() {
     if (!e) return;
     setAnoDocs(e.final);
     setVaga(e.vaga);
+    setDigitalizado(!!e.digitalizado);
     const base = [...e.codigos];
     while (base.length < 4) base.push({ codigo: "", descricao: "" });
     setCodigos(base.slice(0, 4));
@@ -78,6 +80,7 @@ function GeradorHistoricoPage() {
       final: anoDocs.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
+      digitalizado,
       tipo: "historico" as const,
     };
     let savedId: string;
@@ -96,6 +99,7 @@ function GeradorHistoricoPage() {
       if (!edit) {
         setAnoDocs("");
         setVaga("");
+        setDigitalizado(false);
         setCodigos([
           { codigo: "", descricao: "" },
           { codigo: "", descricao: "" },
@@ -169,6 +173,15 @@ function GeradorHistoricoPage() {
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
+            <button
+              type="button"
+              onClick={() => setDigitalizado((v) => !v)}
+              aria-pressed={digitalizado}
+              className={["h-11 px-4 rounded-xl font-medium inline-flex items-center gap-2 transition border", digitalizado ? "bg-emerald-500/20 border-emerald-500/60 text-foreground" : "glass-input border-transparent text-muted-foreground"].join(" ")}
+            >
+              <span className={["h-2.5 w-2.5 rounded-full", digitalizado ? "bg-emerald-500" : "bg-muted-foreground/40"].join(" ")} />
+              DIGITALIZADO: {digitalizado ? "ON" : "OFF"}
+            </button>
             <button
               disabled={!valid}
               onClick={() => gerar(false)}
