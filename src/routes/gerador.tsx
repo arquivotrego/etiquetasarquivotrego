@@ -21,6 +21,7 @@ function GeradorPage() {
   const [ano, setAno] = useState("");
   const [final, setFinal] = useState("");
   const [vaga, setVaga] = useState("");
+  const [digitalizado, setDigitalizado] = useState(false);
   const [codigos, setCodigos] = useState([
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
@@ -38,6 +39,7 @@ function GeradorPage() {
     setAno(e.ano);
     setFinal(e.final);
     setVaga(e.vaga);
+    setDigitalizado(!!e.digitalizado);
     const base = [...e.codigos];
     while (base.length < 4) base.push({ codigo: "", descricao: "" });
     setCodigos(base.slice(0, 4));
@@ -98,7 +100,8 @@ function GeradorPage() {
       final: final.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
-      tipo: "permanente" as const,
+      digitalizado,
+      tipo:  as const,
     };
     let savedId: string;
     if (edit) {
@@ -117,6 +120,7 @@ function GeradorPage() {
         setAno("");
         setFinal("");
         setVaga("");
+        setDigitalizado(false);
         setCodigos([
           { codigo: "", descricao: "" },
           { codigo: "", descricao: "" },
@@ -203,6 +207,15 @@ function GeradorPage() {
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
+            <button
+              type="button"
+              onClick={() => setDigitalizado((v) => !v)}
+              aria-pressed={digitalizado}
+              className={["h-11 px-4 rounded-xl font-medium inline-flex items-center gap-2 transition border", digitalizado ? "bg-emerald-500/20 border-emerald-500/60 text-foreground" : "glass-input border-transparent text-muted-foreground"].join(" ")}
+            >
+              <span className={["h-2.5 w-2.5 rounded-full", digitalizado ? "bg-emerald-500" : "bg-muted-foreground/40"].join(" ")} />
+              DIGITALIZADO: {digitalizado ? "ON" : "OFF"}
+            </button>
             <button
               disabled={!valid}
               onClick={() => gerar(false)}
