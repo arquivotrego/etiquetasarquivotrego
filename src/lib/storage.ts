@@ -21,6 +21,7 @@ export type Etiqueta = {
   guarda?: string;
   permanente?: boolean;
   tipo?: TipoEtiqueta;
+  digitalizado?: boolean;
   createdAt: number;
 };
 
