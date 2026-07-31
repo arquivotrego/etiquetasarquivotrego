@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { MAPA_CORREDORES } from "@/lib/mapa-caixas";
 import { etiquetasStore, type Etiqueta as EtiquetaT } from "@/lib/storage";
-import { Search } from "lucide-react";
+import { Search, ScanLine } from "lucide-react";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -22,6 +23,7 @@ function MapaPage() {
   const navigate = useNavigate();
   const [etiquetas, setEtiquetas] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
+  const [lote, setLote] = useState("");
 
   useEffect(() => {
     const refresh = () => setEtiquetas(etiquetasStore.list());
@@ -53,6 +55,38 @@ function MapaPage() {
     navigate({ to: "/historico", search: { tipo: et.tipo ?? "permanente", sel: et.id } });
   }
 
+  function aplicarLote(valor: boolean) {
+    const nums = lote
+      .split(/[\s,;]+/)
+      .map((s) => parseInt(s.trim(), 10))
+      .filter((n) => !isNaN(n));
+    const unicos = Array.from(new Set(nums));
+    if (unicos.length === 0) {
+      toast.error("Digite os números das vagas separados por vírgula.");
+      return;
+    }
+    let alterados = 0;
+    const semEtiqueta: number[] = [];
+    for (const n of unicos) {
+      const ets = etiquetas.filter((e) => parseInt(e.vaga, 10) === n);
+      if (ets.length === 0) {
+        semEtiqueta.push(n);
+        continue;
+      }
+      for (const e of ets) {
+        etiquetasStore.update(e.id, { digitalizado: valor });
+        alterados++;
+      }
+    }
+    setEtiquetas(etiquetasStore.list());
+    toast.success(
+      `${alterados} etiqueta(s) ${valor ? "marcadas" : "desmarcadas"} como DIGITALIZADO`,
+      semEtiqueta.length
+        ? { description: `Sem etiqueta: ${semEtiqueta.join(", ")}` }
+        : undefined,
+    );
+  }
+
   return (
     <div className="space-y-4">
       <header className="glass rounded-2xl p-5">
@@ -74,6 +108,40 @@ function MapaPage() {
           className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
         />
       </div>
+
+      <div className="glass-strong rounded-2xl p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          <ScanLine className="h-4 w-4 text-primary" /> MARCAR DIGITALIZADO EM LOTE
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Digite os números das vagas separados por vírgula (ex: 101, 102, 145). As etiquetas
+          correspondentes recebem a tag DIGITALIZADO e a bolinha verde no mapa.
+        </p>
+        <textarea
+          value={lote}
+          onChange={(e) => setLote(e.target.value)}
+          rows={2}
+          placeholder="101, 102, 145, 300"
+          className="w-full rounded-xl px-3 py-2 text-sm bg-white/60 dark:bg-white/5 border border-white/60 dark:border-white/10 outline-none focus:border-primary resize-y"
+        />
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => aplicarLote(true)}
+            className="h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-md hover:opacity-90 transition"
+          >
+            Marcar como digitalizado
+          </button>
+          <button
+            type="button"
+            onClick={() => aplicarLote(false)}
+            className="h-10 px-4 rounded-xl glass-input text-sm font-medium hover:bg-white/80 transition"
+          >
+            Desmarcar
+          </button>
+        </div>
+      </div>
+
 
       <div className="space-y-4">
         {corredores.map((c) => (
