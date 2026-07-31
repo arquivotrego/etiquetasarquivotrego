@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { MAPA_CORREDORES } from "@/lib/mapa-caixas";
 import { etiquetasStore, type Etiqueta as EtiquetaT } from "@/lib/storage";
-import { Search } from "lucide-react";
+import { Search, ScanLine } from "lucide-react";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
