@@ -182,6 +182,8 @@ function HistoricoPage() {
           { key: "permanente", label: "Guarda Permanente" },
           { key: "intermediaria", label: "Guarda Intermediária" },
           { key: "historico", label: "Histórico - Permanente" },
+          { key: "sgp", label: "SGP - Permanente" },
+
         ] as { key: TipoEtiqueta; label: string }[]).map((t) => {
           const active = tab === t.key;
           return (
@@ -329,6 +331,13 @@ function HistoricoPage() {
                   onChange={() => toggle(e.id)}
                   className="h-5 w-5 accent-[color:var(--color-primary)]"
                 />
+                {e.tipo === "sgp" ? (
+                  <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2 text-sm">
+                    <div className="truncate"><span className="text-xs text-muted-foreground block">Local</span><b>{e.local || "—"}</b></div>
+                    <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
+                    <div><span className="text-xs text-muted-foreground block">Letra</span><b>{e.letra || "—"}</b></div>
+                  </div>
+                ) : (
                 <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
                   <div className="truncate">
@@ -338,6 +347,8 @@ function HistoricoPage() {
                   <div><span className="text-xs text-muted-foreground block">Ano de Produção</span><b>{e.ano}</b></div>
                   <div><span className="text-xs text-muted-foreground block">Final</span><b>{e.final || "—"}</b></div>
                 </div>
+                )}
+
                 <div className="flex gap-1">
                   <button
                     onClick={() => setPreview(e)}
