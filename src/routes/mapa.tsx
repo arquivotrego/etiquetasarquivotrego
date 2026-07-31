@@ -109,6 +109,40 @@ function MapaPage() {
         />
       </div>
 
+      <div className="glass-strong rounded-2xl p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          <ScanLine className="h-4 w-4 text-primary" /> MARCAR DIGITALIZADO EM LOTE
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Digite os números das vagas separados por vírgula (ex: 101, 102, 145). As etiquetas
+          correspondentes recebem a tag DIGITALIZADO e a bolinha verde no mapa.
+        </p>
+        <textarea
+          value={lote}
+          onChange={(e) => setLote(e.target.value)}
+          rows={2}
+          placeholder="101, 102, 145, 300"
+          className="w-full rounded-xl px-3 py-2 text-sm bg-white/60 dark:bg-white/5 border border-white/60 dark:border-white/10 outline-none focus:border-primary resize-y"
+        />
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => aplicarLote(true)}
+            className="h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-md hover:opacity-90 transition"
+          >
+            Marcar como digitalizado
+          </button>
+          <button
+            type="button"
+            onClick={() => aplicarLote(false)}
+            className="h-10 px-4 rounded-xl glass-input text-sm font-medium hover:bg-white/80 transition"
+          >
+            Desmarcar
+          </button>
+        </div>
+      </div>
+
+
       <div className="space-y-4">
         {corredores.map((c) => (
           <section key={c.corredor} className="glass rounded-2xl p-4 space-y-3">
