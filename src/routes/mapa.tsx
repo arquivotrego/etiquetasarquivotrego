@@ -55,6 +55,38 @@ function MapaPage() {
     navigate({ to: "/historico", search: { tipo: et.tipo ?? "permanente", sel: et.id } });
   }
 
+  function aplicarLote(valor: boolean) {
+    const nums = lote
+      .split(/[\s,;]+/)
+      .map((s) => parseInt(s.trim(), 10))
+      .filter((n) => !isNaN(n));
+    const unicos = Array.from(new Set(nums));
+    if (unicos.length === 0) {
+      toast.error("Digite os números das vagas separados por vírgula.");
+      return;
+    }
+    let alterados = 0;
+    const semEtiqueta: number[] = [];
+    for (const n of unicos) {
+      const ets = etiquetas.filter((e) => parseInt(e.vaga, 10) === n);
+      if (ets.length === 0) {
+        semEtiqueta.push(n);
+        continue;
+      }
+      for (const e of ets) {
+        etiquetasStore.update(e.id, { digitalizado: valor });
+        alterados++;
+      }
+    }
+    setEtiquetas(etiquetasStore.list());
+    toast.success(
+      `${alterados} etiqueta(s) ${valor ? "marcadas" : "desmarcadas"} como DIGITALIZADO`,
+      semEtiqueta.length
+        ? { description: `Sem etiqueta: ${semEtiqueta.join(", ")}` }
+        : undefined,
+    );
+  }
+
   return (
     <div className="space-y-4">
       <header className="glass rounded-2xl p-5">
