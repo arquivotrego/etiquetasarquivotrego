@@ -23,6 +23,7 @@ function MapaPage() {
   const navigate = useNavigate();
   const [etiquetas, setEtiquetas] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
+  const [lote, setLote] = useState("");
 
   useEffect(() => {
     const refresh = () => setEtiquetas(etiquetasStore.list());
