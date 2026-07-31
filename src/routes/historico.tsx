@@ -362,8 +362,11 @@ function HistoricoPage() {
                         ? "/gerador-intermediaria"
                         : e.tipo === "historico"
                         ? "/gerador-historico"
+                        : e.tipo === "sgp"
+                        ? "/gerador-sgp"
                         : "/gerador"
                     }
+
                     search={{ edit: e.id }}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
                   >

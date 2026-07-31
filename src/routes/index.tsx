@@ -33,6 +33,13 @@ const cards: Card[] = [
     icon: Archive,
   },
   {
+    to: "/gerador-sgp",
+    title: "GERADOR - SGP - PERMANENTE",
+    desc: "Gere etiquetas espelho SEREF (LOCAL, TIPO e LETRA).",
+    icon: Tags,
+  },
+  {
+
     to: "/certidoes",
     title: "GERADOR DE CERTIDÕES",
     desc: "Gere certidões de digitalização.",

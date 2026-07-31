@@ -52,8 +52,12 @@ function MapaPage() {
   function abrirVaga(n: number) {
     const et = porVaga.get(n);
     if (!et) return;
-    navigate({ to: "/historico", search: { tipo: et.tipo ?? "permanente", sel: et.id } });
+    navigate({
+      to: "/historico",
+      search: { tipo: et.tipo ?? "permanente", sel: et.id, q: et.vaga },
+    });
   }
+
 
   function aplicarLote(valor: boolean) {
     const nums = lote
