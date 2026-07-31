@@ -4,21 +4,22 @@ import { etiquetasStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@
 import { Etiqueta } from "@/components/Etiqueta";
 import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
 
-const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico"];
+const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
 
 export const Route = createFileRoute("/historico")({
-  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string; q?: string } => ({
     tipo: TIPOS.includes(s.tipo as TipoEtiqueta) ? (s.tipo as TipoEtiqueta) : undefined,
     sel: typeof s.sel === "string" && s.sel ? s.sel : undefined,
+    q: typeof s.q === "string" && s.q ? s.q : undefined,
   }),
   head: () => ({ meta: [{ title: "Histórico de Etiquetas — TRE-GO" }] }),
   component: HistoricoPage,
 });
 
 function HistoricoPage() {
-  const { tipo, sel } = Route.useSearch();
+  const { tipo, sel, q: qParam } = Route.useSearch();
   const [list, setList] = useState<EtiquetaT[]>([]);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(qParam ?? "");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<EtiquetaT | null>(null);
   const [tab, setTab] = useState<TipoEtiqueta>(tipo ?? "permanente");
@@ -31,8 +32,13 @@ function HistoricoPage() {
   }, [tipo]);
 
   useEffect(() => {
+    setQ(qParam ?? "");
+  }, [qParam]);
+
+  useEffect(() => {
     if (sel) setSelected(sel.split(","));
   }, [sel]);
+
 
   // Filtros avançados
   const [showFilters, setShowFilters] = useState(false);
