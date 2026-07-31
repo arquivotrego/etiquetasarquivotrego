@@ -82,11 +82,20 @@ function HistoricoPage() {
     const cod = filtroCodigo.trim().toLowerCase();
     return byTipo.filter((e) => {
       if (s) {
-        const hay = [e.ano, e.final, e.vaga, ...e.codigos.map((c) => c.codigo + " " + c.descricao)]
+        const hay = [
+          e.ano,
+          e.final,
+          e.vaga,
+          e.local ?? "",
+          e.tipoDoc ?? "",
+          e.letra ?? "",
+          ...e.codigos.map((c) => c.codigo + " " + c.descricao),
+        ]
           .join(" ")
           .toLowerCase();
         if (!hay.includes(s)) return false;
       }
+
       if (ano && !e.ano.includes(ano)) return false;
       if (cod && !e.codigos.some((c) => c.codigo.toLowerCase().includes(cod))) return false;
       const n = parseInt(e.vaga, 10);
@@ -111,11 +120,13 @@ function HistoricoPage() {
     ? `/imprimir?ids=${selected.join(",")}`
     : null;
 
-  const counts = {
+  const counts: Record<TipoEtiqueta, number> = {
     permanente: list.filter((e) => (e.tipo ?? "permanente") === "permanente").length,
     intermediaria: list.filter((e) => e.tipo === "intermediaria").length,
     historico: list.filter((e) => e.tipo === "historico").length,
+    sgp: list.filter((e) => e.tipo === "sgp").length,
   };
+
 
   function clearFilters() {
     setFiltroAno("");
