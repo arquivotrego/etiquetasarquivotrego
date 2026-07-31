@@ -10,7 +10,7 @@ export type Codigo = {
   builtin?: boolean;
   origem?: Origem;
 };
-export type TipoEtiqueta = "permanente" | "intermediaria" | "historico";
+export type TipoEtiqueta = "permanente" | "intermediaria" | "historico" | "sgp";
 export type Etiqueta = {
   id: string;
   ano: string;
@@ -22,8 +22,12 @@ export type Etiqueta = {
   permanente?: boolean;
   tipo?: TipoEtiqueta;
   digitalizado?: boolean;
+  local?: string;
+  tipoDoc?: string;
+  letra?: string;
   createdAt: number;
 };
+
 
 const KEY_CODIGOS = "tre_codigos_v1";
 const KEY_ETIQUETAS = "tre_etiquetas_v1";

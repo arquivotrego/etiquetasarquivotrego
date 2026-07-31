@@ -1,9 +1,12 @@
 import type { Etiqueta as EtiquetaT } from "@/lib/storage";
 import logoUrl from "@/assets/tre-go-logo.png";
+import { EtiquetaSGP } from "./EtiquetaSGP";
 
 export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
+  if (data.tipo === "sgp") return <EtiquetaSGP data={data} />;
   const codigos = data.codigos ?? [];
   const cells = [0, 1, 2, 3].map((i) => codigos[i]?.codigo ?? "");
+
   const descricao = codigos
     .filter((c) => c.descricao)
     .map((c) => c.descricao)

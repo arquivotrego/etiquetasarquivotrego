@@ -4,21 +4,22 @@ import { etiquetasStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@
 import { Etiqueta } from "@/components/Etiqueta";
 import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
 
-const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico"];
+const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
 
 export const Route = createFileRoute("/historico")({
-  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string; q?: string } => ({
     tipo: TIPOS.includes(s.tipo as TipoEtiqueta) ? (s.tipo as TipoEtiqueta) : undefined,
     sel: typeof s.sel === "string" && s.sel ? s.sel : undefined,
+    q: typeof s.q === "string" && s.q ? s.q : undefined,
   }),
   head: () => ({ meta: [{ title: "Histórico de Etiquetas — TRE-GO" }] }),
   component: HistoricoPage,
 });
 
 function HistoricoPage() {
-  const { tipo, sel } = Route.useSearch();
+  const { tipo, sel, q: qParam } = Route.useSearch();
   const [list, setList] = useState<EtiquetaT[]>([]);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(qParam ?? "");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<EtiquetaT | null>(null);
   const [tab, setTab] = useState<TipoEtiqueta>(tipo ?? "permanente");
@@ -31,8 +32,13 @@ function HistoricoPage() {
   }, [tipo]);
 
   useEffect(() => {
+    setQ(qParam ?? "");
+  }, [qParam]);
+
+  useEffect(() => {
     if (sel) setSelected(sel.split(","));
   }, [sel]);
+
 
   // Filtros avançados
   const [showFilters, setShowFilters] = useState(false);
@@ -76,11 +82,20 @@ function HistoricoPage() {
     const cod = filtroCodigo.trim().toLowerCase();
     return byTipo.filter((e) => {
       if (s) {
-        const hay = [e.ano, e.final, e.vaga, ...e.codigos.map((c) => c.codigo + " " + c.descricao)]
+        const hay = [
+          e.ano,
+          e.final,
+          e.vaga,
+          e.local ?? "",
+          e.tipoDoc ?? "",
+          e.letra ?? "",
+          ...e.codigos.map((c) => c.codigo + " " + c.descricao),
+        ]
           .join(" ")
           .toLowerCase();
         if (!hay.includes(s)) return false;
       }
+
       if (ano && !e.ano.includes(ano)) return false;
       if (cod && !e.codigos.some((c) => c.codigo.toLowerCase().includes(cod))) return false;
       const n = parseInt(e.vaga, 10);
@@ -105,11 +120,13 @@ function HistoricoPage() {
     ? `/imprimir?ids=${selected.join(",")}`
     : null;
 
-  const counts = {
+  const counts: Record<TipoEtiqueta, number> = {
     permanente: list.filter((e) => (e.tipo ?? "permanente") === "permanente").length,
     intermediaria: list.filter((e) => e.tipo === "intermediaria").length,
     historico: list.filter((e) => e.tipo === "historico").length,
+    sgp: list.filter((e) => e.tipo === "sgp").length,
   };
+
 
   function clearFilters() {
     setFiltroAno("");
@@ -165,6 +182,8 @@ function HistoricoPage() {
           { key: "permanente", label: "Guarda Permanente" },
           { key: "intermediaria", label: "Guarda Intermediária" },
           { key: "historico", label: "Histórico - Permanente" },
+          { key: "sgp", label: "SGP - Permanente" },
+
         ] as { key: TipoEtiqueta; label: string }[]).map((t) => {
           const active = tab === t.key;
           return (
@@ -312,6 +331,13 @@ function HistoricoPage() {
                   onChange={() => toggle(e.id)}
                   className="h-5 w-5 accent-[color:var(--color-primary)]"
                 />
+                {e.tipo === "sgp" ? (
+                  <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2 text-sm">
+                    <div className="truncate"><span className="text-xs text-muted-foreground block">Local</span><b>{e.local || "—"}</b></div>
+                    <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
+                    <div><span className="text-xs text-muted-foreground block">Letra</span><b>{e.letra || "—"}</b></div>
+                  </div>
+                ) : (
                 <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
                   <div className="truncate">
@@ -321,6 +347,8 @@ function HistoricoPage() {
                   <div><span className="text-xs text-muted-foreground block">Ano de Produção</span><b>{e.ano}</b></div>
                   <div><span className="text-xs text-muted-foreground block">Final</span><b>{e.final || "—"}</b></div>
                 </div>
+                )}
+
                 <div className="flex gap-1">
                   <button
                     onClick={() => setPreview(e)}
@@ -334,8 +362,11 @@ function HistoricoPage() {
                         ? "/gerador-intermediaria"
                         : e.tipo === "historico"
                         ? "/gerador-historico"
+                        : e.tipo === "sgp"
+                        ? "/gerador-sgp"
                         : "/gerador"
                     }
+
                     search={{ edit: e.id }}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
                   >

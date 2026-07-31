@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as ImprimirRouteImport } from './routes/imprimir'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as GeradorSgpRouteImport } from './routes/gerador-sgp'
 import { Route as GeradorIntermediariaRouteImport } from './routes/gerador-intermediaria'
 import { Route as GeradorHistoricoRouteImport } from './routes/gerador-historico'
 import { Route as GeradorRouteImport } from './routes/gerador'
@@ -32,6 +33,11 @@ const ImprimirRoute = ImprimirRouteImport.update({
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeradorSgpRoute = GeradorSgpRouteImport.update({
+  id: '/gerador-sgp',
+  path: '/gerador-sgp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GeradorIntermediariaRoute = GeradorIntermediariaRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
+  '/gerador-sgp': typeof GeradorSgpRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
   '/mapa': typeof MapaRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
+  '/gerador-sgp': typeof GeradorSgpRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
   '/mapa': typeof MapaRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/gerador': typeof GeradorRoute
   '/gerador-historico': typeof GeradorHistoricoRoute
   '/gerador-intermediaria': typeof GeradorIntermediariaRoute
+  '/gerador-sgp': typeof GeradorSgpRoute
   '/historico': typeof HistoricoRoute
   '/imprimir': typeof ImprimirRoute
   '/mapa': typeof MapaRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/gerador'
     | '/gerador-historico'
     | '/gerador-intermediaria'
+    | '/gerador-sgp'
     | '/historico'
     | '/imprimir'
     | '/mapa'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/gerador'
     | '/gerador-historico'
     | '/gerador-intermediaria'
+    | '/gerador-sgp'
     | '/historico'
     | '/imprimir'
     | '/mapa'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/gerador'
     | '/gerador-historico'
     | '/gerador-intermediaria'
+    | '/gerador-sgp'
     | '/historico'
     | '/imprimir'
     | '/mapa'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   GeradorRoute: typeof GeradorRoute
   GeradorHistoricoRoute: typeof GeradorHistoricoRoute
   GeradorIntermediariaRoute: typeof GeradorIntermediariaRoute
+  GeradorSgpRoute: typeof GeradorSgpRoute
   HistoricoRoute: typeof HistoricoRoute
   ImprimirRoute: typeof ImprimirRoute
   MapaRoute: typeof MapaRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/historico'
       fullPath: '/historico'
       preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gerador-sgp': {
+      id: '/gerador-sgp'
+      path: '/gerador-sgp'
+      fullPath: '/gerador-sgp'
+      preLoaderRoute: typeof GeradorSgpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gerador-intermediaria': {
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   GeradorRoute: GeradorRoute,
   GeradorHistoricoRoute: GeradorHistoricoRoute,
   GeradorIntermediariaRoute: GeradorIntermediariaRoute,
+  GeradorSgpRoute: GeradorSgpRoute,
   HistoricoRoute: HistoricoRoute,
   ImprimirRoute: ImprimirRoute,
   MapaRoute: MapaRoute,
