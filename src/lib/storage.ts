@@ -143,6 +143,46 @@ function toRow(e: Partial<Etiqueta>) {
 
 let started = false;
 
+const MIGRATED_KEY = "tre_migrado_cloud_v1";
+
+/** Envia uma única vez os dados antigos salvos no navegador para o banco compartilhado. */
+async function migrateLocalStorageOnce() {
+  try {
+    if (localStorage.getItem(MIGRATED_KEY)) return;
+    const codigos = JSON.parse(localStorage.getItem("tre_codigos_v1") ?? "[]") as Codigo[];
+    const etiquetas = JSON.parse(localStorage.getItem("tre_etiquetas_v1") ?? "[]") as Etiqueta[];
+
+    const novosCodigos = codigos
+      .filter((c) => c?.codigo && !BUILTIN_CODES.has(String(c.codigo).trim()))
+      .map((c) => ({
+        codigo: String(c.codigo).trim(),
+        descricao: c.descricao ?? "",
+        prazo: c.prazo ?? null,
+      }));
+    if (novosCodigos.length) {
+      await supabase.from("codigos").upsert(novosCodigos, { onConflict: "codigo" });
+    }
+
+    if (etiquetas.length) {
+      const { count } = await supabase
+        .from("etiquetas")
+        .select("id", { count: "exact", head: true });
+      if (!count) {
+        await supabase.from("etiquetas").insert(
+          etiquetas.map((e) => ({
+            ...toRow(e),
+            created_at: new Date(e.createdAt || Date.now()).toISOString(),
+          })) as never,
+        );
+      }
+    }
+
+    localStorage.setItem(MIGRATED_KEY, "1");
+  } catch {
+    /* ignora falhas de migração */
+  }
+}
+
 /** Carrega os dados do banco e mantém o cache sincronizado em tempo real. */
 export function startRealtimeSync() {
   if (started || typeof window === "undefined") return;
