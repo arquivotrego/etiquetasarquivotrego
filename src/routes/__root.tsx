@@ -128,6 +128,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    startRealtimeSync();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppShell>
