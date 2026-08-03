@@ -165,8 +165,11 @@ export function startRealtimeSync() {
     }
   };
 
-  void loadCodigos();
-  void loadEtiquetas();
+  void (async () => {
+    await migrateLocalStorageOnce();
+    await loadCodigos();
+    await loadEtiquetas();
+  })();
 
   supabase
     .channel("tre-sync")
