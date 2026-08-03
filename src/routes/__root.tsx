@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
 import { Toaster } from "../components/ui/sonner";
+import { startRealtimeSync } from "../lib/storage";
 
 
 function NotFoundComponent() {
@@ -127,6 +128,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    startRealtimeSync();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
