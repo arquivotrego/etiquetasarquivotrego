@@ -62,6 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <AuthButton />
             <button
               type="button"
               onClick={toggleTheme}
