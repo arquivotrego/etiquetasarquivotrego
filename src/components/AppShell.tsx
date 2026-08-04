@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { FileText, Tags, Search, Moon, Sun, ScrollText, Archive, Home, Grid3x3, type LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { TreLogo } from "./TreLogo";
+import { AuthButton } from "./AuthButton";
 
 const THEME_KEY = "tre_theme";
 type Theme = "light" | "dark";
