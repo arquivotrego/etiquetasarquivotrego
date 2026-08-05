@@ -465,14 +465,14 @@
 /* ===== Dark mode adjustments ===== */
 html.dark body {
   background:
-    radial-gradient(at 20% 20%, oklch(0.30 0.004 250) 0%, transparent 55%),
-    radial-gradient(at 80% 0%, oklch(0.27 0.003 250) 0%, transparent 55%),
-    radial-gradient(at 70% 90%, oklch(0.25 0.003 250) 0%, transparent 55%),
-    oklch(0.22 0.003 250);
+    radial-gradient(at 20% 20%, oklch(0.30 0.05 250) 0%, transparent 55%),
+    radial-gradient(at 80% 0%, oklch(0.27 0.045 240) 0%, transparent 55%),
+    radial-gradient(at 70% 90%, oklch(0.25 0.05 255) 0%, transparent 55%),
+    oklch(0.18 0.03 250);
 }
-html.dark .app-bg::before { background: oklch(0.45 0.005 250); opacity: 0.3; }
-html.dark .app-bg::after  { background: oklch(0.42 0.004 250); opacity: 0.3; }
-html.dark .app-bg span    { background: oklch(0.40 0.004 250); opacity: 0.25; }
+html.dark .app-bg::before { background: oklch(0.45 0.08 250); opacity: 0.3; }
+html.dark .app-bg::after  { background: oklch(0.42 0.07 240); opacity: 0.3; }
+html.dark .app-bg span    { background: oklch(0.40 0.07 260); opacity: 0.25; }
 
 .dark .glass-strong {
   background: oklch(0.22 0.03 250 / 0.72);
