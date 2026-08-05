@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { MAPA_CORREDORES } from "@/lib/mapa-caixas";
 import { etiquetasStore, type Etiqueta as EtiquetaT } from "@/lib/storage";
-import { Search, ScanLine } from "lucide-react";
+import { Search, ScanLine, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -19,11 +19,49 @@ export const Route = createFileRoute("/mapa")({
   component: MapaPage,
 });
 
+type Grupo = {
+  key: string;
+  sigla: string;
+  nome: string;
+  de: number;
+  ate: number;
+};
+
+const GRUPOS: Grupo[] = [
+  { key: "gp", sigla: "GP", nome: "GUARDA PERMANENTE", de: 1, ate: 5 },
+  { key: "gi", sigla: "GI", nome: "GUARDA INTERMEDIÁRIA", de: 6, ate: 12 },
+  { key: "jud", sigla: "JUD", nome: "JUDICIÁRIO", de: 13, ate: 30 },
+  { key: "h", sigla: "H", nome: "HISTÓRICO", de: 31, ate: 32 },
+  { key: "sgp", sigla: "SGP", nome: "SGP", de: 33, ate: 52 },
+  { key: "outros", sigla: "OUTROS", nome: "DEMAIS CORREDORES", de: 53, ate: 999 },
+];
+
+/** Corredores do grupo com as vagas renumeradas a partir de 0001 (esquerda→direita, cima→baixo). */
+function corredoresDoGrupo(g: Grupo) {
+  let n = 1;
+  const corredores = MAPA_CORREDORES.filter((c) => c.corredor >= g.de && c.corredor <= g.ate).map(
+    (c) => ({
+      corredor: c.corredor,
+      estantes: c.estantes.map((e) => {
+        const inicio = n;
+        n += e.rows * e.cols;
+        return { ...e, inicio };
+      }),
+    }),
+  );
+  return { corredores, total: n - 1 };
+}
+
+const MAPA_GRUPOS = GRUPOS.map((g) => ({ ...g, ...corredoresDoGrupo(g) })).filter(
+  (g) => g.corredores.length > 0,
+);
+
 function MapaPage() {
   const navigate = useNavigate();
   const [etiquetas, setEtiquetas] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
   const [lote, setLote] = useState("");
+  const [aberto, setAberto] = useState<string | null>(MAPA_GRUPOS[0]?.key ?? null);
 
   useEffect(() => {
     const refresh = () => setEtiquetas(etiquetasStore.list());
@@ -42,12 +80,6 @@ function MapaPage() {
   }, [etiquetas]);
 
   const alvo = parseInt(q.trim(), 10);
-  const corredores = useMemo(() => {
-    if (isNaN(alvo)) return MAPA_CORREDORES;
-    return MAPA_CORREDORES.filter((c) =>
-      c.estantes.some((e) => alvo >= e.start && alvo < e.start + e.rows * e.cols),
-    );
-  }, [alvo]);
 
   function abrirVaga(n: number) {
     const et = porVaga.get(n);
@@ -57,7 +89,6 @@ function MapaPage() {
       search: { tipo: et.tipo ?? "permanente", sel: et.id, q: et.vaga },
     });
   }
-
 
   function aplicarLote(valor: boolean) {
     const nums = lote
@@ -96,7 +127,8 @@ function MapaPage() {
       <header className="glass rounded-2xl p-5">
         <h2 className="text-xl font-semibold tracking-tight">MAPA DE ORGANIZAÇÃO DE CAIXAS</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Cada bloco é uma estante. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-white ring-1 ring-black/20 align-middle" /> já
+          Os corredores estão agrupados por setor e cada grupo tem sua própria numeração, começando
+          na vaga 0001. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-white ring-1 ring-black/20 align-middle" /> já
           possuem etiqueta; com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> também estão digitalizadas —
           clique para abrir no histórico já selecionada para impressão.
         </p>
@@ -146,65 +178,96 @@ function MapaPage() {
         </div>
       </div>
 
+      <div className="space-y-3">
+        {MAPA_GRUPOS.map((g) => {
+          const open = aberto === g.key;
+          return (
+            <section key={g.key} className="glass rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setAberto(open ? null : g.key)}
+                className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-white/30 dark:hover:bg-white/5 transition"
+              >
+                <span className="text-sm font-semibold tracking-tight">
+                  CORREDORES {g.sigla} ({g.nome})
+                </span>
+                <span className="flex items-center gap-3 text-xs text-muted-foreground tabular-nums">
+                  <span>
+                    corredores {g.corredores[0]?.corredor}–
+                    {g.corredores[g.corredores.length - 1]?.corredor} · vagas 0001–
+                    {String(g.total).padStart(4, "0")}
+                  </span>
+                  <ChevronDown className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} />
+                </span>
+              </button>
 
-      <div className="space-y-4">
-        {corredores.map((c) => (
-          <section key={c.corredor} className="glass rounded-2xl p-4 space-y-3">
-            <h3 className="text-sm font-semibold tracking-tight">CORREDOR {c.corredor}</h3>
-            <div className="flex gap-4 flex-wrap">
-              {c.estantes.map((est) => (
-                <div key={est.start} className="glass-strong rounded-xl p-2">
-                  <div
-                    className="grid gap-1"
-                    style={{ gridTemplateColumns: `repeat(${est.cols}, minmax(0, 1fr))` }}
-                  >
-                    {Array.from({ length: est.rows * est.cols }, (_, i) => est.start + i).map((n) => {
-                      const et = porVaga.get(n);
-                      const ocupada = !!et;
-                      const digitalizada = !!et?.digitalizado;
-                      const destaque = n === alvo;
-                      return (
-                        <button
-                          key={n}
-                          type="button"
-                          onClick={() => abrirVaga(n)}
-                          disabled={!ocupada}
-                          title={
-                            ocupada
-                              ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : ""}abrir no histórico`
-                              : `Vaga ${n} — livre`
-                          }
-                          className={[
-                            "relative h-9 w-12 rounded-lg text-[11px] font-medium tabular-nums transition",
-                            ocupada
-                              ? "bg-primary/15 text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer"
-                              : "bg-white/40 dark:bg-white/5 text-muted-foreground cursor-default",
-                            destaque ? "ring-2 ring-primary" : "",
-                          ].join(" ")}
-                        >
-                          {n}
-                          {ocupada && (
-                            <span className="absolute top-1 right-1 flex items-center gap-0.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-white ring-1 ring-black/20" />
-                              {digitalizada && (
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                              )}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {open && (
+                <div className="px-4 pb-4 space-y-3">
+                  {g.corredores.map((c) => (
+                    <div key={c.corredor} className="glass-strong rounded-xl p-3 space-y-2">
+                      <h3 className="text-xs font-semibold tracking-tight text-muted-foreground">
+                        CORREDOR {c.corredor}
+                      </h3>
+                      <div className="flex gap-3 flex-wrap">
+                        {c.estantes.map((est) => (
+                          <div
+                            key={est.inicio}
+                            className="rounded-lg p-1.5 bg-white/40 dark:bg-white/5"
+                          >
+                            <div
+                              className="grid gap-0.5"
+                              style={{ gridTemplateColumns: `repeat(${est.cols}, minmax(0, 1fr))` }}
+                            >
+                              {Array.from(
+                                { length: est.rows * est.cols },
+                                (_, i) => est.inicio + i,
+                              ).map((n) => {
+                                const et = porVaga.get(n);
+                                const ocupada = !!et;
+                                const digitalizada = !!et?.digitalizado;
+                                const destaque = n === alvo;
+                                return (
+                                  <button
+                                    key={n}
+                                    type="button"
+                                    onClick={() => abrirVaga(n)}
+                                    disabled={!ocupada}
+                                    title={
+                                      ocupada
+                                        ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : ""}abrir no histórico`
+                                        : `Vaga ${n} — livre`
+                                    }
+                                    className={[
+                                      "relative h-5 w-8 rounded text-[9px] leading-none font-medium tabular-nums transition",
+                                      ocupada
+                                        ? "bg-primary/20 text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer"
+                                        : "bg-white/50 dark:bg-white/5 text-muted-foreground/70 cursor-default",
+                                      destaque ? "ring-2 ring-primary" : "",
+                                    ].join(" ")}
+                                  >
+                                    {n}
+                                    {ocupada && (
+                                      <span className="absolute top-0.5 right-0.5 flex items-center gap-px">
+                                        <span className="h-1 w-1 rounded-full bg-white ring-1 ring-black/20" />
+                                        {digitalizada && (
+                                          <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                                        )}
+                                      </span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-        ))}
-        {corredores.length === 0 && (
-          <div className="glass rounded-2xl p-10 text-center text-sm text-muted-foreground">
-            Nenhuma vaga encontrada com esse número.
-          </div>
-        )}
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
