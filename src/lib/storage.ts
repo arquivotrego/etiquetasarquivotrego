@@ -188,19 +188,36 @@ export function startRealtimeSync() {
   if (started || typeof window === "undefined") return;
   started = true;
 
+  /** Busca todas as linhas em páginas (o banco devolve no máximo 1000 por consulta). */
+  const fetchAll = async <T,>(table: "codigos" | "etiquetas"): Promise<T[] | null> => {
+    const PAGE = 1000;
+    const out: T[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await supabase
+        .from(table)
+        .select("*")
+        .order("created_at", { ascending: true })
+        .range(from, from + PAGE - 1);
+      if (error) return out.length ? out : null;
+      out.push(...((data ?? []) as T[]));
+      if (!data || data.length < PAGE) break;
+    }
+    return out;
+  };
+
   const loadCodigos = async () => {
-    const { data } = await supabase.from("codigos").select("*");
+    const data = await fetchAll<CodigoRow>("codigos");
     if (data) {
-      cacheCodigos = (data as CodigoRow[])
+      cacheCodigos = data
         .filter((r) => !BUILTIN_CODES.has(r.codigo.trim()))
         .map(mapCodigo);
       notify("codigos");
     }
   };
   const loadEtiquetas = async () => {
-    const { data } = await supabase.from("etiquetas").select("*");
+    const data = await fetchAll<EtiquetaRow>("etiquetas");
     if (data) {
-      cacheEtiquetas = (data as EtiquetaRow[]).map(mapEtiqueta);
+      cacheEtiquetas = data.map(mapEtiqueta);
       notify("etiquetas");
     }
   };
