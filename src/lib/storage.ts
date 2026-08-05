@@ -69,6 +69,65 @@ function notify(key: string) {
   window.dispatchEvent(new CustomEvent("tre-storage", { detail: { key } }));
 }
 
+/* ------------------------------------------------------------------ */
+/* Status de sincronização (salvando / confirmado / erro / atualizado) */
+/* ------------------------------------------------------------------ */
+
+export type SyncState = "idle" | "saving" | "saved" | "error" | "realtime";
+export type SyncStatus = { state: SyncState; message: string; at: number };
+
+let syncStatus: SyncStatus = { state: "idle", message: "Sincronizado", at: Date.now() };
+let pending = 0;
+let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+export function getSyncStatus(): SyncStatus {
+  return syncStatus;
+}
+
+export function subscribeSyncStatus(cb: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("tre-sync-status", cb);
+  return () => window.removeEventListener("tre-sync-status", cb);
+}
+
+function setSync(state: SyncState, message: string, autoIdleMs?: number) {
+  syncStatus = { state, message, at: Date.now() };
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("tre-sync-status"));
+    if (resetTimer) clearTimeout(resetTimer);
+    if (autoIdleMs) {
+      resetTimer = setTimeout(() => {
+        if (pending === 0) setSync("idle", "Sincronizado");
+      }, autoIdleMs);
+    }
+  }
+}
+
+/** Envolve uma escrita no banco para refletir o status na interface. */
+function track<T extends { error: unknown } | void>(
+  label: string,
+  op: PromiseLike<T>,
+): void {
+  pending += 1;
+  setSync("saving", `Salvando ${label}…`);
+  void Promise.resolve(op).then(
+    (res) => {
+      pending -= 1;
+      const err = res && typeof res === "object" ? (res as { error: unknown }).error : null;
+      if (err) {
+        const msg = (err as { message?: string }).message ?? "Falha ao salvar";
+        setSync("error", `Erro ao salvar ${label}: ${msg}`);
+      } else if (pending === 0) {
+        setSync("saved", "Alterações salvas", 2500);
+      }
+    },
+    (e: unknown) => {
+      pending -= 1;
+      setSync("error", `Erro ao salvar ${label}: ${(e as Error)?.message ?? "sem conexão"}`);
+    },
+  );
+}
+
 type CodigoRow = {
   id: string;
   codigo: string;
@@ -233,12 +292,18 @@ export function startRealtimeSync() {
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "codigos" },
-      () => void loadCodigos(),
+      () => {
+        setSync("realtime", "Atualizado por outro dispositivo", 2500);
+        void loadCodigos();
+      },
     )
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "etiquetas" },
-      () => void loadEtiquetas(),
+      () => {
+        setSync("realtime", "Atualizado por outro dispositivo", 2500);
+        void loadEtiquetas();
+      },
     )
     .subscribe();
 }
@@ -262,18 +327,21 @@ export const codigosStore = {
       ? cacheCodigos.map((c) => (c.id === item.id ? item : c))
       : [...cacheCodigos, item];
     notify("codigos");
-    void supabase
-      .from("codigos")
-      .upsert(
-        { id: item.id, codigo: item.codigo, descricao: item.descricao, prazo: item.prazo ?? null },
-        { onConflict: "codigo" },
-      );
+    track(
+      "código",
+      supabase
+        .from("codigos")
+        .upsert(
+          { id: item.id, codigo: item.codigo, descricao: item.descricao, prazo: item.prazo ?? null },
+          { onConflict: "codigo" },
+        ),
+    );
     return item;
   },
   remove: (id: string) => {
     cacheCodigos = cacheCodigos.filter((c) => c.id !== id);
     notify("codigos");
-    void supabase.from("codigos").delete().eq("id", id);
+    track("exclusão de código", supabase.from("codigos").delete().eq("id", id));
   },
   find: (codigo: string, tipo?: TipoEtiqueta): Codigo | undefined => {
     const code = codigo.trim();
@@ -290,19 +358,19 @@ export const etiquetasStore = {
     const item: Etiqueta = { ...e, id: crypto.randomUUID(), createdAt: Date.now() };
     cacheEtiquetas = [item, ...cacheEtiquetas];
     notify("etiquetas");
-    void supabase.from("etiquetas").insert({ id: item.id, ...toRow(item) } as never);
+    track("etiqueta", supabase.from("etiquetas").insert({ id: item.id, ...toRow(item) } as never));
     return item;
   },
   update: (id: string, patch: Partial<Omit<Etiqueta, "id" | "createdAt">>) => {
     cacheEtiquetas = cacheEtiquetas.map((e) => (e.id === id ? { ...e, ...patch } : e));
     notify("etiquetas");
-    void supabase.from("etiquetas").update(toRow(patch) as never).eq("id", id);
+    track("etiqueta", supabase.from("etiquetas").update(toRow(patch) as never).eq("id", id));
     return cacheEtiquetas.find((e) => e.id === id);
   },
   remove: (id: string) => {
     cacheEtiquetas = cacheEtiquetas.filter((e) => e.id !== id);
     notify("etiquetas");
-    void supabase.from("etiquetas").delete().eq("id", id);
+    track("exclusão de etiqueta", supabase.from("etiquetas").delete().eq("id", id));
   },
   get: (id: string) => cacheEtiquetas.find((e) => e.id === id),
 };
