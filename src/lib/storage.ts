@@ -327,18 +327,21 @@ export const codigosStore = {
       ? cacheCodigos.map((c) => (c.id === item.id ? item : c))
       : [...cacheCodigos, item];
     notify("codigos");
-    void supabase
-      .from("codigos")
-      .upsert(
-        { id: item.id, codigo: item.codigo, descricao: item.descricao, prazo: item.prazo ?? null },
-        { onConflict: "codigo" },
-      );
+    track(
+      "código",
+      supabase
+        .from("codigos")
+        .upsert(
+          { id: item.id, codigo: item.codigo, descricao: item.descricao, prazo: item.prazo ?? null },
+          { onConflict: "codigo" },
+        ),
+    );
     return item;
   },
   remove: (id: string) => {
     cacheCodigos = cacheCodigos.filter((c) => c.id !== id);
     notify("codigos");
-    void supabase.from("codigos").delete().eq("id", id);
+    track("exclusão de código", supabase.from("codigos").delete().eq("id", id));
   },
   find: (codigo: string, tipo?: TipoEtiqueta): Codigo | undefined => {
     const code = codigo.trim();
