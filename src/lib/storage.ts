@@ -292,12 +292,18 @@ export function startRealtimeSync() {
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "codigos" },
-      () => void loadCodigos(),
+      () => {
+        setSync("realtime", "Atualizado por outro dispositivo", 2500);
+        void loadCodigos();
+      },
     )
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "etiquetas" },
-      () => void loadEtiquetas(),
+      () => {
+        setSync("realtime", "Atualizado por outro dispositivo", 2500);
+        void loadEtiquetas();
+      },
     )
     .subscribe();
 }
