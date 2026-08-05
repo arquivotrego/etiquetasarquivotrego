@@ -69,6 +69,65 @@ function notify(key: string) {
   window.dispatchEvent(new CustomEvent("tre-storage", { detail: { key } }));
 }
 
+/* ------------------------------------------------------------------ */
+/* Status de sincronização (salvando / confirmado / erro / atualizado) */
+/* ------------------------------------------------------------------ */
+
+export type SyncState = "idle" | "saving" | "saved" | "error" | "realtime";
+export type SyncStatus = { state: SyncState; message: string; at: number };
+
+let syncStatus: SyncStatus = { state: "idle", message: "Sincronizado", at: Date.now() };
+let pending = 0;
+let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+export function getSyncStatus(): SyncStatus {
+  return syncStatus;
+}
+
+export function subscribeSyncStatus(cb: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("tre-sync-status", cb);
+  return () => window.removeEventListener("tre-sync-status", cb);
+}
+
+function setSync(state: SyncState, message: string, autoIdleMs?: number) {
+  syncStatus = { state, message, at: Date.now() };
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("tre-sync-status"));
+    if (resetTimer) clearTimeout(resetTimer);
+    if (autoIdleMs) {
+      resetTimer = setTimeout(() => {
+        if (pending === 0) setSync("idle", "Sincronizado");
+      }, autoIdleMs);
+    }
+  }
+}
+
+/** Envolve uma escrita no banco para refletir o status na interface. */
+function track<T extends { error: unknown } | void>(
+  label: string,
+  op: PromiseLike<T>,
+): void {
+  pending += 1;
+  setSync("saving", `Salvando ${label}…`);
+  void Promise.resolve(op).then(
+    (res) => {
+      pending -= 1;
+      const err = res && typeof res === "object" ? (res as { error: unknown }).error : null;
+      if (err) {
+        const msg = (err as { message?: string }).message ?? "Falha ao salvar";
+        setSync("error", `Erro ao salvar ${label}: ${msg}`);
+      } else if (pending === 0) {
+        setSync("saved", "Alterações salvas", 2500);
+      }
+    },
+    (e: unknown) => {
+      pending -= 1;
+      setSync("error", `Erro ao salvar ${label}: ${(e as Error)?.message ?? "sem conexão"}`);
+    },
+  );
+}
+
 type CodigoRow = {
   id: string;
   codigo: string;
