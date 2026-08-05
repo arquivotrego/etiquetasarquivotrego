@@ -358,19 +358,19 @@ export const etiquetasStore = {
     const item: Etiqueta = { ...e, id: crypto.randomUUID(), createdAt: Date.now() };
     cacheEtiquetas = [item, ...cacheEtiquetas];
     notify("etiquetas");
-    void supabase.from("etiquetas").insert({ id: item.id, ...toRow(item) } as never);
+    track("etiqueta", supabase.from("etiquetas").insert({ id: item.id, ...toRow(item) } as never));
     return item;
   },
   update: (id: string, patch: Partial<Omit<Etiqueta, "id" | "createdAt">>) => {
     cacheEtiquetas = cacheEtiquetas.map((e) => (e.id === id ? { ...e, ...patch } : e));
     notify("etiquetas");
-    void supabase.from("etiquetas").update(toRow(patch) as never).eq("id", id);
+    track("etiqueta", supabase.from("etiquetas").update(toRow(patch) as never).eq("id", id));
     return cacheEtiquetas.find((e) => e.id === id);
   },
   remove: (id: string) => {
     cacheEtiquetas = cacheEtiquetas.filter((e) => e.id !== id);
     notify("etiquetas");
-    void supabase.from("etiquetas").delete().eq("id", id);
+    track("exclusão de etiqueta", supabase.from("etiquetas").delete().eq("id", id));
   },
   get: (id: string) => cacheEtiquetas.find((e) => e.id === id),
 };
