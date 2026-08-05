@@ -64,6 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <SyncIndicator />
             <AuthButton />
             <button
               type="button"
