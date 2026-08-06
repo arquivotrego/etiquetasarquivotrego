@@ -46,6 +46,7 @@ function HistoricoPage() {
   const [filtroCodigo, setFiltroCodigo] = useState("");
   const [vagaMin, setVagaMin] = useState<number | null>(null);
   const [vagaMax, setVagaMax] = useState<number | null>(null);
+  const [ordem, setOrdem] = useState<"recente" | "antigo" | "vaga-asc" | "vaga-desc">("recente");
 
   const refresh = () => setList(etiquetasStore.list());
   useEffect(() => {
