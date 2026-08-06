@@ -73,25 +73,32 @@ function MapaPage() {
     return () => window.removeEventListener("tre-storage", refresh);
   }, []);
 
-  const porVaga = useMemo(() => {
-    const m = new Map<number, EtiquetaT>();
+  /** Etiquetas indexadas por tipo e depois por número da vaga. */
+  const porTipoVaga = useMemo(() => {
+    const m = new Map<string, Map<number, EtiquetaT>>();
     for (const e of etiquetas) {
       const n = parseInt(e.vaga, 10);
-      if (!isNaN(n) && !m.has(n)) m.set(n, e);
+      if (isNaN(n)) continue;
+      const t = e.tipo ?? "permanente";
+      let sub = m.get(t);
+      if (!sub) {
+        sub = new Map<number, EtiquetaT>();
+        m.set(t, sub);
+      }
+      if (!sub.has(n)) sub.set(n, e);
     }
     return m;
   }, [etiquetas]);
 
   const alvo = parseInt(q.trim(), 10);
 
-  function abrirVaga(n: number) {
-    const et = porVaga.get(n);
-    if (!et) return;
+  function abrirVaga(et: EtiquetaT) {
     navigate({
       to: "/historico",
       search: { tipo: et.tipo ?? "permanente", sel: et.id, q: et.vaga },
     });
   }
+
 
   function aplicarLote(valor: boolean) {
     const nums = lote
