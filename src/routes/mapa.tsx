@@ -242,7 +242,7 @@ function MapaPage() {
                                   <button
                                     key={n}
                                     type="button"
-                                    onClick={() => abrirVaga(n)}
+                                    onClick={() => et && abrirVaga(et)}
                                     disabled={!ocupada}
                                     title={
                                       ocupada
