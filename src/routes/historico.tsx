@@ -81,7 +81,7 @@ function HistoricoPage() {
     const s = q.toLowerCase().trim();
     const ano = filtroAno.trim();
     const cod = filtroCodigo.trim().toLowerCase();
-    return byTipo.filter((e) => {
+    const base = byTipo.filter((e) => {
       if (s) {
         const hay = [
           e.ano,
@@ -106,7 +106,19 @@ function HistoricoPage() {
       }
       return true;
     });
-  }, [byTipo, q, filtroAno, filtroCodigo, vagaMin, vagaMax]);
+
+    const num = (v: string) => {
+      const n = parseInt(v, 10);
+      return isNaN(n) ? Number.MAX_SAFE_INTEGER : n;
+    };
+    return [...base].sort((a, b) => {
+      if (ordem === "recente") return b.createdAt - a.createdAt;
+      if (ordem === "antigo") return a.createdAt - b.createdAt;
+      if (ordem === "vaga-asc") return num(a.vaga) - num(b.vaga);
+      return num(b.vaga) - num(a.vaga);
+    });
+  }, [byTipo, q, filtroAno, filtroCodigo, vagaMin, vagaMax, ordem]);
+
 
   function toggle(id: string) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
