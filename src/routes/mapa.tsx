@@ -25,16 +25,19 @@ type Grupo = {
   nome: string;
   de: number;
   ate: number;
+  /** Tipo de etiqueta que ocupa este grupo de corredores (null = nenhum). */
+  tipo: EtiquetaT["tipo"] | null;
 };
 
 const GRUPOS: Grupo[] = [
-  { key: "gp", sigla: "GP", nome: "GUARDA PERMANENTE", de: 1, ate: 5 },
-  { key: "gi", sigla: "GI", nome: "GUARDA INTERMEDIÁRIA", de: 6, ate: 12 },
-  { key: "jud", sigla: "JUD", nome: "JUDICIÁRIO", de: 13, ate: 30 },
-  { key: "h", sigla: "H", nome: "HISTÓRICO", de: 31, ate: 32 },
-  { key: "sgp", sigla: "SGP", nome: "SGP", de: 33, ate: 52 },
-  { key: "outros", sigla: "OUTROS", nome: "DEMAIS CORREDORES", de: 53, ate: 999 },
+  { key: "gp", sigla: "GP", nome: "GUARDA PERMANENTE", de: 1, ate: 5, tipo: "permanente" },
+  { key: "gi", sigla: "GI", nome: "GUARDA INTERMEDIÁRIA", de: 6, ate: 12, tipo: "intermediaria" },
+  { key: "jud", sigla: "JUD", nome: "JUDICIÁRIO", de: 13, ate: 30, tipo: null },
+  { key: "h", sigla: "H", nome: "HISTÓRICO", de: 31, ate: 32, tipo: "historico" },
+  { key: "sgp", sigla: "SGP", nome: "SGP", de: 33, ate: 52, tipo: "sgp" },
+  { key: "outros", sigla: "OUTROS", nome: "DEMAIS CORREDORES", de: 53, ate: 999, tipo: null },
 ];
+
 
 /** Corredores do grupo com as vagas renumeradas a partir de 0001 (esquerda→direita, cima→baixo). */
 function corredoresDoGrupo(g: Grupo) {
