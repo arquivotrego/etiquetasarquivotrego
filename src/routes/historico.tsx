@@ -257,6 +257,19 @@ function HistoricoPage() {
                 className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
               />
             </label>
+            <label className="block sm:col-span-2">
+              <span className="text-xs font-medium text-muted-foreground block mb-1.5">Ordenar por</span>
+              <select
+                value={ordem}
+                onChange={(e) => setOrdem(e.target.value as typeof ordem)}
+                className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
+              >
+                <option value="recente">Mais recente</option>
+                <option value="antigo">Menos recente</option>
+                <option value="vaga-asc">Vaga — menor para maior</option>
+                <option value="vaga-desc">Vaga — maior para menor</option>
+              </select>
+            </label>
           </div>
 
           {maxVaga > 0 && (
