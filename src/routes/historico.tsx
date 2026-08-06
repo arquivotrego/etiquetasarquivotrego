@@ -46,6 +46,7 @@ function HistoricoPage() {
   const [filtroCodigo, setFiltroCodigo] = useState("");
   const [vagaMin, setVagaMin] = useState<number | null>(null);
   const [vagaMax, setVagaMax] = useState<number | null>(null);
+  const [ordem, setOrdem] = useState<"recente" | "antigo" | "vaga-asc" | "vaga-desc">("recente");
 
   const refresh = () => setList(etiquetasStore.list());
   useEffect(() => {
@@ -80,7 +81,7 @@ function HistoricoPage() {
     const s = q.toLowerCase().trim();
     const ano = filtroAno.trim();
     const cod = filtroCodigo.trim().toLowerCase();
-    return byTipo.filter((e) => {
+    const base = byTipo.filter((e) => {
       if (s) {
         const hay = [
           e.ano,
@@ -105,7 +106,19 @@ function HistoricoPage() {
       }
       return true;
     });
-  }, [byTipo, q, filtroAno, filtroCodigo, vagaMin, vagaMax]);
+
+    const num = (v: string) => {
+      const n = parseInt(v, 10);
+      return isNaN(n) ? Number.MAX_SAFE_INTEGER : n;
+    };
+    return [...base].sort((a, b) => {
+      if (ordem === "recente") return b.createdAt - a.createdAt;
+      if (ordem === "antigo") return a.createdAt - b.createdAt;
+      if (ordem === "vaga-asc") return num(a.vaga) - num(b.vaga);
+      return num(b.vaga) - num(a.vaga);
+    });
+  }, [byTipo, q, filtroAno, filtroCodigo, vagaMin, vagaMax, ordem]);
+
 
   function toggle(id: string) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
@@ -134,6 +147,7 @@ function HistoricoPage() {
     setVagaMin(minVaga);
     setVagaMax(maxVaga);
     setQ("");
+    setOrdem("recente");
   }
 
   return (
@@ -243,6 +257,19 @@ function HistoricoPage() {
                 placeholder="ex.: 12.02"
                 className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
               />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="text-xs font-medium text-muted-foreground block mb-1.5">Ordenar por</span>
+              <select
+                value={ordem}
+                onChange={(e) => setOrdem(e.target.value as typeof ordem)}
+                className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
+              >
+                <option value="recente">Mais recente</option>
+                <option value="antigo">Menos recente</option>
+                <option value="vaga-asc">Vaga — menor para maior</option>
+                <option value="vaga-desc">Vaga — maior para menor</option>
+              </select>
             </label>
           </div>
 
