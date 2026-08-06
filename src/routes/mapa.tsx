@@ -191,6 +191,8 @@ function MapaPage() {
       <div className="space-y-3">
         {MAPA_GRUPOS.map((g) => {
           const open = aberto === g.key;
+          const porVaga = (g.tipo ? porTipoVaga.get(g.tipo) : undefined) ?? new Map<number, EtiquetaT>();
+
           return (
             <section key={g.key} className="glass rounded-2xl overflow-hidden">
               <button
