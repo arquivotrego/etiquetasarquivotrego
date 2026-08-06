@@ -182,7 +182,7 @@ function HistoricoPage() {
           { key: "permanente", label: "Guarda Permanente" },
           { key: "intermediaria", label: "Guarda Intermediária" },
           { key: "historico", label: "Histórico - Permanente" },
-          { key: "sgp", label: "SGP - Permanente" },
+          
 
         ] as { key: TipoEtiqueta; label: string }[]).map((t) => {
           const active = tab === t.key;

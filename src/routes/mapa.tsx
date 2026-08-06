@@ -25,16 +25,19 @@ type Grupo = {
   nome: string;
   de: number;
   ate: number;
+  /** Tipo de etiqueta que ocupa este grupo de corredores (null = nenhum). */
+  tipo: EtiquetaT["tipo"] | null;
 };
 
 const GRUPOS: Grupo[] = [
-  { key: "gp", sigla: "GP", nome: "GUARDA PERMANENTE", de: 1, ate: 5 },
-  { key: "gi", sigla: "GI", nome: "GUARDA INTERMEDIÁRIA", de: 6, ate: 12 },
-  { key: "jud", sigla: "JUD", nome: "JUDICIÁRIO", de: 13, ate: 30 },
-  { key: "h", sigla: "H", nome: "HISTÓRICO", de: 31, ate: 32 },
-  { key: "sgp", sigla: "SGP", nome: "SGP", de: 33, ate: 52 },
-  { key: "outros", sigla: "OUTROS", nome: "DEMAIS CORREDORES", de: 53, ate: 999 },
+  { key: "gp", sigla: "GP", nome: "GUARDA PERMANENTE", de: 1, ate: 5, tipo: "permanente" },
+  { key: "gi", sigla: "GI", nome: "GUARDA INTERMEDIÁRIA", de: 6, ate: 12, tipo: "intermediaria" },
+  { key: "jud", sigla: "JUD", nome: "JUDICIÁRIO", de: 13, ate: 30, tipo: null },
+  { key: "h", sigla: "H", nome: "HISTÓRICO", de: 31, ate: 32, tipo: "historico" },
+  { key: "sgp", sigla: "SGP", nome: "SGP", de: 33, ate: 52, tipo: "sgp" },
+  { key: "outros", sigla: "OUTROS", nome: "DEMAIS CORREDORES", de: 53, ate: 999, tipo: null },
 ];
+
 
 /** Corredores do grupo com as vagas renumeradas a partir de 0001 (esquerda→direita, cima→baixo). */
 function corredoresDoGrupo(g: Grupo) {
@@ -70,25 +73,32 @@ function MapaPage() {
     return () => window.removeEventListener("tre-storage", refresh);
   }, []);
 
-  const porVaga = useMemo(() => {
-    const m = new Map<number, EtiquetaT>();
+  /** Etiquetas indexadas por tipo e depois por número da vaga. */
+  const porTipoVaga = useMemo(() => {
+    const m = new Map<string, Map<number, EtiquetaT>>();
     for (const e of etiquetas) {
       const n = parseInt(e.vaga, 10);
-      if (!isNaN(n) && !m.has(n)) m.set(n, e);
+      if (isNaN(n)) continue;
+      const t = e.tipo ?? "permanente";
+      let sub = m.get(t);
+      if (!sub) {
+        sub = new Map<number, EtiquetaT>();
+        m.set(t, sub);
+      }
+      if (!sub.has(n)) sub.set(n, e);
     }
     return m;
   }, [etiquetas]);
 
   const alvo = parseInt(q.trim(), 10);
 
-  function abrirVaga(n: number) {
-    const et = porVaga.get(n);
-    if (!et) return;
+  function abrirVaga(et: EtiquetaT) {
     navigate({
       to: "/historico",
       search: { tipo: et.tipo ?? "permanente", sel: et.id, q: et.vaga },
     });
   }
+
 
   function aplicarLote(valor: boolean) {
     const nums = lote
@@ -181,6 +191,8 @@ function MapaPage() {
       <div className="space-y-3">
         {MAPA_GRUPOS.map((g) => {
           const open = aberto === g.key;
+          const porVaga = (g.tipo ? porTipoVaga.get(g.tipo) : undefined) ?? new Map<number, EtiquetaT>();
+
           return (
             <section key={g.key} className="glass rounded-2xl overflow-hidden">
               <button
@@ -230,7 +242,7 @@ function MapaPage() {
                                   <button
                                     key={n}
                                     type="button"
-                                    onClick={() => abrirVaga(n)}
+                                    onClick={() => et && abrirVaga(et)}
                                     disabled={!ocupada}
                                     title={
                                       ocupada
