@@ -147,6 +147,7 @@ function HistoricoPage() {
     setVagaMin(minVaga);
     setVagaMax(maxVaga);
     setQ("");
+    setOrdem("recente");
   }
 
   return (
