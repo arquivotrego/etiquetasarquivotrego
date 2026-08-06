@@ -41,7 +41,7 @@ export function EtiquetaSGP({ data }: { data: Partial<EtiquetaT> }) {
         </div>
         <div className="sgp-prazo-cell">
           <b>DESTINO FINAL</b>
-          <span>Guarda Permanente</span>
+          <span>ELIMINAÇÃO</span>
         </div>
       </div>
 
