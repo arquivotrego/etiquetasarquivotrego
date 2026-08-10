@@ -23,7 +23,31 @@ function HistoricoPage() {
   const [q, setQ] = useState(qParam ?? "");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<EtiquetaT | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editVaga, setEditVaga] = useState("");
+  const [editCod, setEditCod] = useState("");
   const [tab, setTab] = useState<TipoEtiqueta>(tipo ?? "permanente");
+
+  function startEdit(e: EtiquetaT) {
+    setEditId(e.id);
+    setEditVaga(e.vaga);
+    setEditCod(e.codigos.map((c) => c.codigo).join(", "));
+  }
+
+  function saveEdit(e: EtiquetaT) {
+    const codigos = editCod
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .map((codigo) => {
+        const known = codigosStore.list().find((k) => k.codigo === codigo);
+        const prev = e.codigos.find((c) => c.codigo === codigo);
+        return { codigo, descricao: known?.descricao ?? prev?.descricao ?? "" };
+      });
+    etiquetasStore.update(e.id, { vaga: editVaga.trim(), codigos });
+    setEditId(null);
+  }
+
 
   useEffect(() => {
     if (tipo) {
