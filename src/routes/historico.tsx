@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { etiquetasStore, codigosStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X, Pencil, Check } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil, Check, ArrowUpDown } from "lucide-react";
 
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
@@ -242,14 +242,29 @@ function HistoricoPage() {
         })}
       </div>
 
-      <div className="glass-strong rounded-2xl p-3 flex items-center gap-2">
-        <Search className="h-4 w-4 ml-2 text-muted-foreground" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Pesquisar por ano, vaga, código ou descrição…"
-          className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
-        />
+      <div className="flex flex-wrap gap-2 items-center">
+        <div className="glass-strong rounded-2xl p-3 flex items-center gap-2 flex-1 min-w-[240px]">
+          <Search className="h-4 w-4 ml-2 text-muted-foreground" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Pesquisar por ano, vaga, código ou descrição…"
+            className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
+          />
+        </div>
+        <label className="glass-strong rounded-2xl p-3 flex items-center gap-2">
+          <ArrowUpDown className="h-4 w-4 ml-1 text-muted-foreground" />
+          <select
+            value={ordem}
+            onChange={(e) => setOrdem(e.target.value as typeof ordem)}
+            className="h-10 px-2 pr-3 bg-transparent outline-none text-sm font-medium cursor-pointer"
+          >
+            <option value="recente">Mais recente</option>
+            <option value="antigo">Menos recente</option>
+            <option value="vaga-asc">Vaga — menor para maior</option>
+            <option value="vaga-desc">Vaga — maior para menor</option>
+          </select>
+        </label>
       </div>
 
       {showFilters && (
@@ -282,19 +297,6 @@ function HistoricoPage() {
                 placeholder="ex.: 12.02"
                 className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
               />
-            </label>
-            <label className="block sm:col-span-2">
-              <span className="text-xs font-medium text-muted-foreground block mb-1.5">Ordenar por</span>
-              <select
-                value={ordem}
-                onChange={(e) => setOrdem(e.target.value as typeof ordem)}
-                className="w-full h-10 px-3 rounded-xl bg-white/70 border border-white/60 text-sm outline-none focus:border-primary"
-              >
-                <option value="recente">Mais recente</option>
-                <option value="antigo">Menos recente</option>
-                <option value="vaga-asc">Vaga — menor para maior</option>
-                <option value="vaga-desc">Vaga — maior para menor</option>
-              </select>
             </label>
           </div>
 
