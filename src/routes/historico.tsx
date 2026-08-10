@@ -422,13 +422,13 @@ function HistoricoPage() {
                 </div>
                 {e.tipo === "sgp" ? (
 
-                  <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2 text-sm">
+                  <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Local</span><b>{e.local || "—"}</b></div>
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
                     <div><span className="text-xs text-muted-foreground block">Letra</span><b>{e.letra || "—"}</b></div>
                   </div>
                 ) : editId === e.id ? (
-                  <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm items-end">
+                  <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-4 gap-2 text-sm items-end">
                     <div>
                       <span className="text-xs text-muted-foreground block mb-1">Vaga</span>
                       <input
@@ -465,7 +465,7 @@ function HistoricoPage() {
                     </div>
                   </div>
                 ) : (
-                <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
+                <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
                   <div className="truncate">
                     <span className="text-xs text-muted-foreground block">Código</span>
@@ -476,7 +476,8 @@ function HistoricoPage() {
                 </div>
                 )}
 
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap sm:flex-nowrap shrink-0">
+
                   <button
                     onClick={() => setPreview(e)}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium hover:bg-white/80"
