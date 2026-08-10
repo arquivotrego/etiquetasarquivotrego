@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { etiquetasStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
+import { etiquetasStore, codigosStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil, Check } from "lucide-react";
+
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
 
@@ -22,7 +23,31 @@ function HistoricoPage() {
   const [q, setQ] = useState(qParam ?? "");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<EtiquetaT | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editVaga, setEditVaga] = useState("");
+  const [editCod, setEditCod] = useState("");
   const [tab, setTab] = useState<TipoEtiqueta>(tipo ?? "permanente");
+
+  function startEdit(e: EtiquetaT) {
+    setEditId(e.id);
+    setEditVaga(e.vaga);
+    setEditCod(e.codigos.map((c) => c.codigo).join(", "));
+  }
+
+  function saveEdit(e: EtiquetaT) {
+    const codigos = editCod
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .map((codigo) => {
+        const known = codigosStore.list().find((k) => k.codigo === codigo);
+        const prev = e.codigos.find((c) => c.codigo === codigo);
+        return { codigo, descricao: known?.descricao ?? prev?.descricao ?? "" };
+      });
+    etiquetasStore.update(e.id, { vaga: editVaga.trim(), codigos });
+    setEditId(null);
+  }
+
 
   useEffect(() => {
     if (tipo) {
@@ -364,6 +389,43 @@ function HistoricoPage() {
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
                     <div><span className="text-xs text-muted-foreground block">Letra</span><b>{e.letra || "—"}</b></div>
                   </div>
+                ) : editId === e.id ? (
+                  <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm items-end">
+                    <div>
+                      <span className="text-xs text-muted-foreground block mb-1">Vaga</span>
+                      <input
+                        value={editVaga}
+                        onChange={(ev) => setEditVaga(ev.target.value)}
+                        onKeyDown={(ev) => ev.key === "Enter" && saveEdit(e)}
+                        autoFocus
+                        className="w-full h-9 px-2 rounded-lg glass-input text-sm outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <span className="text-xs text-muted-foreground block mb-1">Código (separe por vírgula)</span>
+                      <input
+                        value={editCod}
+                        onChange={(ev) => setEditCod(ev.target.value)}
+                        onKeyDown={(ev) => ev.key === "Enter" && saveEdit(e)}
+                        className="w-full h-9 px-2 rounded-lg glass-input text-sm outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => saveEdit(e)}
+                        className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90"
+                      >
+                        <Check className="h-3.5 w-3.5" /> Confirmar
+                      </button>
+                      <button
+                        onClick={() => setEditId(null)}
+                        className="h-9 w-9 rounded-lg glass-input grid place-items-center"
+                        aria-label="Cancelar"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                 <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
@@ -383,22 +445,23 @@ function HistoricoPage() {
                   >
                     Ver
                   </button>
+                  {e.tipo === "sgp" ? (
                   <Link
-                    to={
-                      e.tipo === "intermediaria"
-                        ? "/gerador-intermediaria"
-                        : e.tipo === "historico"
-                        ? "/gerador-historico"
-                        : e.tipo === "sgp"
-                        ? "/gerador-sgp"
-                        : "/gerador"
-                    }
-
+                    to="/gerador-sgp"
                     search={{ edit: e.id }}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
                   >
                     <Pencil className="h-3.5 w-3.5" /> Editar
                   </Link>
+                  ) : (
+                  <button
+                    onClick={() => (editId === e.id ? setEditId(null) : startEdit(e))}
+                    className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
+                  >
+                    <Pencil className="h-3.5 w-3.5" /> Editar
+                  </button>
+                  )}
+
                   <Link
                     to="/imprimir"
                     search={{ ids: e.id }}
