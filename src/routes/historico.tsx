@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { etiquetasStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
+import { etiquetasStore, codigosStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X, Pencil } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil, Check } from "lucide-react";
+
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
 
