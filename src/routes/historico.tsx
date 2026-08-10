@@ -186,8 +186,9 @@ function HistoricoPage() {
 
   return (
     <div className="space-y-4">
-      <div className="sticky top-24 z-20 space-y-3 pb-3">
-      <header className="glass rounded-2xl p-5 flex flex-wrap gap-3 items-center justify-between">
+      <div className="md:sticky md:top-24 z-20 space-y-3 pb-3">
+      <header className="glass rounded-2xl p-4 sm:p-5 flex flex-wrap gap-3 items-center justify-between">
+
 
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Histórico & Impressão</h2>
@@ -195,7 +196,7 @@ function HistoricoPage() {
             Selecione quantas etiquetas quiser — serão impressas 2 por folha A4 paisagem.
           </p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap w-full sm:w-auto">
           <button
             onClick={() => setShowFilters((v) => !v)}
             className={`h-11 px-4 rounded-xl text-sm font-medium inline-flex items-center gap-2 transition ${
@@ -241,9 +242,10 @@ function HistoricoPage() {
                 setTab(t.key);
                 setSelected([]);
               }}
-              className={`flex-1 h-11 px-4 rounded-xl text-sm font-medium transition ${
+              className={`flex-1 min-w-[45%] sm:min-w-0 h-11 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium transition ${
                 active ? "bg-primary text-primary-foreground shadow" : "hover:bg-white/60"
               }`}
+
             >
               {t.label} ({counts[t.key]})
             </button>
@@ -261,11 +263,12 @@ function HistoricoPage() {
             className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
           />
         </div>
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <button
             type="button"
             onClick={() => setOrdemOpen((v) => !v)}
-            className="glass-strong rounded-2xl px-4 h-[62px] flex items-center gap-2 text-sm font-medium hover:bg-white/10 transition"
+            className="w-full sm:w-auto justify-between sm:justify-start glass-strong rounded-2xl px-4 h-[54px] sm:h-[62px] flex items-center gap-2 text-sm font-medium hover:bg-white/10 transition"
+
           >
             <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
             {ORDENS.find((o) => o.key === ordem)?.label}
@@ -274,7 +277,7 @@ function HistoricoPage() {
           {ordemOpen && (
             <>
               <div className="fixed inset-0 z-30" onClick={() => setOrdemOpen(false)} />
-              <div className="absolute right-0 mt-2 z-40 min-w-[220px] glass-strong rounded-2xl p-1.5 shadow-xl border border-white/20 backdrop-blur-2xl">
+              <div className="absolute left-0 right-0 sm:left-auto sm:right-0 mt-2 z-40 sm:min-w-[220px] glass-strong rounded-2xl p-1.5 shadow-xl border border-white/20 backdrop-blur-2xl">
                 {ORDENS.map((o) => (
                   <button
                     key={o.key}
@@ -404,24 +407,28 @@ function HistoricoPage() {
               <li
                 key={e.id}
                 className={[
-                  "glass rounded-2xl p-4 flex items-center gap-4 transition",
+                  "glass rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 transition",
                   isSel ? "ring-2 ring-primary" : "",
                 ].join(" ")}
               >
+                <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   checked={isSel}
                   onChange={() => toggle(e.id)}
-                  className="h-5 w-5 accent-[color:var(--color-primary)]"
+                  className="h-5 w-5 shrink-0 accent-[color:var(--color-primary)]"
                 />
+                <span className="sm:hidden text-xs text-muted-foreground">Selecionar</span>
+                </div>
                 {e.tipo === "sgp" ? (
-                  <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2 text-sm">
+
+                  <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Local</span><b>{e.local || "—"}</b></div>
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
                     <div><span className="text-xs text-muted-foreground block">Letra</span><b>{e.letra || "—"}</b></div>
                   </div>
                 ) : editId === e.id ? (
-                  <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm items-end">
+                  <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-4 gap-2 text-sm items-end">
                     <div>
                       <span className="text-xs text-muted-foreground block mb-1">Vaga</span>
                       <input
@@ -458,7 +465,7 @@ function HistoricoPage() {
                     </div>
                   </div>
                 ) : (
-                <div className="flex-1 min-w-0 grid sm:grid-cols-4 gap-2 text-sm">
+                <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
                   <div><span className="text-xs text-muted-foreground block">Vaga</span><b>{e.vaga}</b></div>
                   <div className="truncate">
                     <span className="text-xs text-muted-foreground block">Código</span>
@@ -469,7 +476,8 @@ function HistoricoPage() {
                 </div>
                 )}
 
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap sm:flex-nowrap shrink-0">
+
                   <button
                     onClick={() => setPreview(e)}
                     className="h-9 px-3 rounded-lg glass-input text-xs font-medium hover:bg-white/80"
