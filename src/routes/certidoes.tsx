@@ -237,8 +237,9 @@ function CertidoesPage() {
         </div>
       </div>
 
-      <div className="lg:sticky lg:top-24 lg:self-start">
-        <div className="glass rounded-2xl p-4">
+      <div className="min-w-0 max-w-full lg:sticky lg:top-24 lg:self-start">
+        <div className="glass rounded-2xl p-4 overflow-x-auto">
+
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1">Pré-visualização</div>
           <div ref={printRef} className="print-area">
             <div className="print-page certidao">
