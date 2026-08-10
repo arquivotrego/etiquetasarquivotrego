@@ -2,10 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { etiquetasStore, codigosStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X, Pencil, Check, ArrowUpDown } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil, Check, ArrowUpDown, ChevronDown } from "lucide-react";
 
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
+
+type Ordem = "recente" | "antigo" | "vaga-asc" | "vaga-desc";
+const ORDENS: { key: Ordem; label: string }[] = [
+  { key: "recente", label: "Mais recente" },
+  { key: "antigo", label: "Menos recente" },
+  { key: "vaga-asc", label: "Vaga — menor para maior" },
+  { key: "vaga-desc", label: "Vaga — maior para menor" },
+];
 
 export const Route = createFileRoute("/historico")({
   validateSearch: (s: Record<string, unknown>): { tipo?: TipoEtiqueta; sel?: string; q?: string } => ({
@@ -71,7 +79,8 @@ function HistoricoPage() {
   const [filtroCodigo, setFiltroCodigo] = useState("");
   const [vagaMin, setVagaMin] = useState<number | null>(null);
   const [vagaMax, setVagaMax] = useState<number | null>(null);
-  const [ordem, setOrdem] = useState<"recente" | "antigo" | "vaga-asc" | "vaga-desc">("recente");
+  const [ordem, setOrdem] = useState<Ordem>("recente");
+  const [ordemOpen, setOrdemOpen] = useState(false);
 
   const refresh = () => setList(etiquetasStore.list());
   useEffect(() => {
@@ -252,19 +261,39 @@ function HistoricoPage() {
             className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
           />
         </div>
-        <label className="glass-strong rounded-2xl p-3 flex items-center gap-2">
-          <ArrowUpDown className="h-4 w-4 ml-1 text-muted-foreground" />
-          <select
-            value={ordem}
-            onChange={(e) => setOrdem(e.target.value as typeof ordem)}
-            className="h-10 px-2 pr-3 bg-transparent outline-none text-sm font-medium cursor-pointer"
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOrdemOpen((v) => !v)}
+            className="glass-strong rounded-2xl px-4 h-[62px] flex items-center gap-2 text-sm font-medium hover:bg-white/10 transition"
           >
-            <option value="recente">Mais recente</option>
-            <option value="antigo">Menos recente</option>
-            <option value="vaga-asc">Vaga — menor para maior</option>
-            <option value="vaga-desc">Vaga — maior para menor</option>
-          </select>
-        </label>
+            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+            {ORDENS.find((o) => o.key === ordem)?.label}
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${ordemOpen ? "rotate-180" : ""}`} />
+          </button>
+          {ordemOpen && (
+            <>
+              <div className="fixed inset-0 z-30" onClick={() => setOrdemOpen(false)} />
+              <div className="absolute right-0 mt-2 z-40 min-w-[220px] glass-strong rounded-2xl p-1.5 shadow-xl border border-white/20 backdrop-blur-2xl">
+                {ORDENS.map((o) => (
+                  <button
+                    key={o.key}
+                    onClick={() => {
+                      setOrdem(o.key);
+                      setOrdemOpen(false);
+                    }}
+                    className={`w-full text-left px-3 h-10 rounded-xl text-sm transition flex items-center justify-between ${
+                      ordem === o.key ? "bg-primary text-primary-foreground" : "hover:bg-white/10"
+                    }`}
+                  >
+                    {o.label}
+                    {ordem === o.key && <Check className="h-4 w-4" />}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {showFilters && (
