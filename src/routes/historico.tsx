@@ -407,17 +407,21 @@ function HistoricoPage() {
               <li
                 key={e.id}
                 className={[
-                  "glass rounded-2xl p-4 flex items-center gap-4 transition",
+                  "glass rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 transition",
                   isSel ? "ring-2 ring-primary" : "",
                 ].join(" ")}
               >
+                <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   checked={isSel}
                   onChange={() => toggle(e.id)}
-                  className="h-5 w-5 accent-[color:var(--color-primary)]"
+                  className="h-5 w-5 shrink-0 accent-[color:var(--color-primary)]"
                 />
+                <span className="sm:hidden text-xs text-muted-foreground">Selecionar</span>
+                </div>
                 {e.tipo === "sgp" ? (
+
                   <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2 text-sm">
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Local</span><b>{e.local || "—"}</b></div>
                     <div className="truncate"><span className="text-xs text-muted-foreground block">Tipo</span><b>{e.tipoDoc || "—"}</b></div>
