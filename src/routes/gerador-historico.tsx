@@ -58,6 +58,9 @@ function GeradorHistoricoPage() {
   function setDescricao(i: number, descricao: string) {
     const next = [...codigos];
     next[i] = { ...next[i], descricao };
+    const alvo = descricao.trim().toLowerCase();
+    const found = cadastrados.find((c) => c.descricao.trim().toLowerCase() === alvo);
+    if (found) next[i].codigo = found.codigo;
     setCodigos(next);
   }
 
