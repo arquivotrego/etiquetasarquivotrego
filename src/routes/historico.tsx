@@ -2,7 +2,49 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { etiquetasStore, codigosStore, type Etiqueta as EtiquetaT, type TipoEtiqueta } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
-import { Printer, Trash2, Search, Filter, X, Pencil, Check, ArrowUpDown, ChevronDown } from "lucide-react";
+import { Printer, Trash2, Search, Filter, X, Pencil, Check, ArrowUpDown, ChevronDown, ExternalLink } from "lucide-react";
+
+function geradorRoute(tipo?: TipoEtiqueta) {
+  switch (tipo) {
+    case "intermediaria":
+      return "/gerador-intermediaria" as const;
+    case "historico":
+      return "/gerador-historico" as const;
+    case "sgp":
+      return "/gerador-sgp" as const;
+    default:
+      return "/gerador" as const;
+  }
+}
+
+function MiniSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label="Digitalizado"
+      onClick={() => onChange(!checked)}
+      className="h-9 px-2.5 rounded-lg glass-input inline-flex items-center gap-2 select-none"
+      title="Digitalizado"
+    >
+      <span className="text-[10px] font-semibold tracking-wide text-muted-foreground">DIGIT.</span>
+      <span
+        className={[
+          "relative inline-flex h-[20px] w-[36px] shrink-0 rounded-full transition-colors duration-300 ring-1 ring-inset",
+          checked ? "bg-emerald-500 ring-emerald-600/40" : "bg-muted-foreground/30 ring-black/10",
+        ].join(" ")}
+      >
+        <span
+          className={[
+            "absolute top-[2px] left-[2px] h-[16px] w-[16px] rounded-full bg-white shadow-md transition-transform duration-300",
+            checked ? "translate-x-[16px]" : "translate-x-0",
+          ].join(" ")}
+        />
+      </span>
+    </button>
+  );
+}
 
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
@@ -448,13 +490,25 @@ function HistoricoPage() {
                         className="w-full h-9 px-2 rounded-lg glass-input text-sm outline-none focus:border-primary"
                       />
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap items-center">
                       <button
                         onClick={() => saveEdit(e)}
                         className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90"
                       >
                         <Check className="h-3.5 w-3.5" /> Confirmar
                       </button>
+                      <Link
+                        to={geradorRoute(e.tipo)}
+                        search={{ edit: e.id }}
+                        className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
+                        title="Editar no gerador"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" /> Gerador
+                      </Link>
+                      <MiniSwitch
+                        checked={!!e.digitalizado}
+                        onChange={(v) => etiquetasStore.update(e.id, { digitalizado: v })}
+                      />
                       <button
                         onClick={() => setEditId(null)}
                         className="h-9 w-9 rounded-lg glass-input grid place-items-center"
