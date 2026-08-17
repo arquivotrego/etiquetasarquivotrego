@@ -494,17 +494,17 @@ function HistoricoPage() {
                     <div className="flex gap-1 flex-wrap items-center">
                       <button
                         onClick={() => saveEdit(e)}
-                        className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90"
+                        className="h-8 px-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1 hover:opacity-90"
                       >
                         <Check className="h-3.5 w-3.5" /> Confirmar
                       </button>
                       <Link
                         to={geradorRoute(e.tipo)}
                         search={{ edit: e.id }}
-                        className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
+                        className="h-8 px-2 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1 hover:bg-white/80"
                         title="Editar no gerador"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" /> Gerador
+                        <ExternalLink className="h-3 w-3" /> Gerador
                       </Link>
                       <MiniSwitch
                         checked={!!e.digitalizado}
@@ -512,12 +512,13 @@ function HistoricoPage() {
                       />
                       <button
                         onClick={() => setEditId(null)}
-                        className="h-9 w-9 rounded-lg glass-input grid place-items-center"
+                        className="h-8 w-8 rounded-lg glass-input grid place-items-center"
                         aria-label="Cancelar"
                       >
                         <X className="h-4 w-4" />
                       </button>
                     </div>
+
                   </div>
                 ) : (
                 <div className="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
