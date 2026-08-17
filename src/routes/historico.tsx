@@ -25,26 +25,27 @@ function MiniSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boo
       aria-checked={checked}
       aria-label="Digitalizado"
       onClick={() => onChange(!checked)}
-      className="h-9 px-2.5 rounded-lg glass-input inline-flex items-center gap-2 select-none"
+      className="h-8 px-2 rounded-lg glass-input inline-flex items-center gap-1.5 select-none"
       title="Digitalizado"
     >
-      <span className="text-[10px] font-semibold tracking-wide text-muted-foreground">DIGIT.</span>
+      <span className="text-[9px] font-semibold tracking-wide text-muted-foreground">DIGIT.</span>
       <span
         className={[
-          "relative inline-flex h-[20px] w-[36px] shrink-0 rounded-full transition-colors duration-300 ring-1 ring-inset",
+          "relative inline-flex h-[16px] w-[28px] shrink-0 rounded-full transition-colors duration-300 ring-1 ring-inset",
           checked ? "bg-emerald-500 ring-emerald-600/40" : "bg-muted-foreground/30 ring-black/10",
         ].join(" ")}
       >
         <span
           className={[
-            "absolute top-[2px] left-[2px] h-[16px] w-[16px] rounded-full bg-white shadow-md transition-transform duration-300",
-            checked ? "translate-x-[16px]" : "translate-x-0",
+            "absolute top-[1.5px] left-[1.5px] h-[13px] w-[13px] rounded-full bg-white shadow-md transition-transform duration-300",
+            checked ? "translate-x-[12px]" : "translate-x-0",
           ].join(" ")}
         />
       </span>
     </button>
   );
 }
+
 
 
 const TIPOS: TipoEtiqueta[] = ["permanente", "intermediaria", "historico", "sgp"];
