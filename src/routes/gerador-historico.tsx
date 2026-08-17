@@ -159,6 +159,7 @@ function GeradorHistoricoPage() {
                 </Field>
                 <Field label="Descrição">
                   <input
+                    list="lista-descricoes-hist"
                     value={c.descricao}
                     onChange={(e) => setDescricao(i, e.target.value)}
                     className="ios-input"
@@ -171,6 +172,13 @@ function GeradorHistoricoPage() {
               {cadastrados.map((c) => (
                 <option key={c.id} value={c.codigo}>
                   {c.descricao}
+                </option>
+              ))}
+            </datalist>
+            <datalist id="lista-descricoes-hist">
+              {cadastrados.map((c) => (
+                <option key={"d-" + c.id} value={c.descricao}>
+                  {c.codigo}
                 </option>
               ))}
             </datalist>
