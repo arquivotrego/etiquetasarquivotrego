@@ -448,13 +448,25 @@ function HistoricoPage() {
                         className="w-full h-9 px-2 rounded-lg glass-input text-sm outline-none focus:border-primary"
                       />
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap items-center">
                       <button
                         onClick={() => saveEdit(e)}
                         className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90"
                       >
                         <Check className="h-3.5 w-3.5" /> Confirmar
                       </button>
+                      <Link
+                        to={geradorRoute(e.tipo)}
+                        search={{ edit: e.id }}
+                        className="h-9 px-3 rounded-lg glass-input text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/80"
+                        title="Editar no gerador"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" /> Gerador
+                      </Link>
+                      <MiniSwitch
+                        checked={!!e.digitalizado}
+                        onChange={(v) => etiquetasStore.update(e.id, { digitalizado: v })}
+                      />
                       <button
                         onClick={() => setEditId(null)}
                         className="h-9 w-9 rounded-lg glass-input grid place-items-center"
