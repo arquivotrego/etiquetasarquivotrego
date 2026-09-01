@@ -71,15 +71,18 @@ function CodigosPage() {
 
   return (
     <div className="space-y-4">
-      <header className="glass rounded-2xl p-5">
-        <h2 className="text-xl font-semibold tracking-tight">Cadastro de Códigos</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {gpCount} códigos padrão (GP) + {giCount} códigos padrão (GI) + {userCount} personalizados.
-          O <b>prazo</b> é usado para calcular automaticamente o Prazo Final na etiqueta (Ano + Prazo).
-        </p>
+      <header className="glass rounded-2xl p-5 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">Cadastro de Códigos</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {gpCount} códigos padrão (GP) + {giCount} códigos padrão (GI) + {userCount} personalizados.
+            Os códigos cadastrados ficam <b>online</b> e aparecem em tempo real para todos os usuários.
+          </p>
+        </div>
+        <SyncIndicator />
       </header>
 
-      <form onSubmit={submit} className="glass-strong rounded-2xl p-5 grid gap-3 md:grid-cols-[160px_1fr_120px_auto]">
+      <form onSubmit={submit} className="glass-strong rounded-2xl p-5 grid gap-3 md:grid-cols-[160px_1fr_120px_200px_auto]">
         <Field label="Código">
           <input value={codigo} onChange={(e) => setCodigo(e.target.value)} placeholder="13.32" className="ios-input" />
         </Field>
@@ -89,6 +92,19 @@ function CodigosPage() {
         <Field label="Prazo (anos)">
           <input value={prazo} onChange={(e) => setPrazo(e.target.value)} placeholder="7" inputMode="numeric" className="ios-input" />
         </Field>
+        <Field label="Tipo de guarda">
+          <select
+            value={guarda}
+            onChange={(e) => setGuarda(e.target.value as GuardaCodigo)}
+            className="ios-input"
+          >
+            {GUARDAS.map((g) => (
+              <option key={g.value} value={g.value}>
+                {g.label}
+              </option>
+            ))}
+          </select>
+        </Field>
         <div className="flex items-end">
           <button className="h-11 px-5 rounded-xl bg-primary text-primary-foreground font-medium inline-flex items-center gap-2 shadow-md hover:opacity-90 transition">
             <Plus className="h-4 w-4" /> Cadastrar
@@ -96,14 +112,34 @@ function CodigosPage() {
         </div>
       </form>
 
-      <div className="glass-strong rounded-2xl p-3 flex items-center gap-2">
+      <div className="glass-strong rounded-2xl p-3 flex flex-wrap items-center gap-2">
         <Search className="h-4 w-4 ml-2 text-muted-foreground" />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Pesquisar código ou descrição…"
-          className="flex-1 h-10 px-2 bg-transparent outline-none text-sm"
+          className="flex-1 min-w-40 h-10 px-2 bg-transparent outline-none text-sm"
         />
+        <div className="flex gap-1">
+          {([
+            { v: "all", l: "Todos" },
+            { v: "permanente", l: "Permanente" },
+            { v: "intermediaria", l: "Intermediária" },
+          ] as const).map((o) => (
+            <button
+              key={o.v}
+              type="button"
+              onClick={() => setFiltroGuarda(o.v)}
+              className={`h-9 px-3 rounded-xl text-xs font-medium transition ${
+                filtroGuarda === o.v
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "glass-input hover:bg-white/70"
+              }`}
+            >
+              {o.l}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="glass rounded-2xl overflow-hidden">
