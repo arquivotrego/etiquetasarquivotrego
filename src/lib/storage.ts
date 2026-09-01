@@ -39,6 +39,7 @@ const BUILTIN_GP: Codigo[] = TEMPORALIDADE_GP.map((t) => ({
   prazo: t.prazo,
   builtin: true,
   origem: "GP",
+  guarda: "permanente",
 }));
 const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
   id: `builtin-gi-${t.codigo}`,
@@ -47,6 +48,7 @@ const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
   prazo: t.prazo,
   builtin: true,
   origem: "GI",
+  guarda: "intermediaria",
 }));
 
 const BUILTIN_CODES = new Set<string>([
