@@ -23,7 +23,9 @@ function CodigosPage() {
   const [codigo, setCodigo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [prazo, setPrazo] = useState("");
+  const [guarda, setGuarda] = useState<GuardaCodigo>("todos");
   const [q, setQ] = useState("");
+  const [filtroGuarda, setFiltroGuarda] = useState<"all" | GuardaCodigo>("all");
 
   const refresh = () => setList(codigosStore.list());
   useEffect(() => {
