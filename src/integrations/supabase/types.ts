@@ -21,6 +21,7 @@ export type Database = {
           descricao: string
           id: string
           prazo: number | null
+          tipo: string
         }
         Insert: {
           codigo: string
@@ -28,6 +29,7 @@ export type Database = {
           descricao: string
           id?: string
           prazo?: number | null
+          tipo?: string
         }
         Update: {
           codigo?: string
@@ -35,6 +37,7 @@ export type Database = {
           descricao?: string
           id?: string
           prazo?: number | null
+          tipo?: string
         }
         Relationships: []
       }

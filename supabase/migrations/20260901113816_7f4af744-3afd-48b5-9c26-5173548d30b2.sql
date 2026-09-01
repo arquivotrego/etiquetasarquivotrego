@@ -1,0 +1,1 @@
+ALTER TABLE public.codigos ADD COLUMN IF NOT EXISTS tipo text NOT NULL DEFAULT 'todos';
