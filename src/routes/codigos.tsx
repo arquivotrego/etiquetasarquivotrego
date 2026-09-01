@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { codigosStore, type Codigo } from "@/lib/storage";
+import { toast } from "sonner";
+import { codigosStore, type Codigo, type GuardaCodigo } from "@/lib/storage";
+import { SyncIndicator } from "@/components/SyncIndicator";
 import { Trash2, Plus, Search } from "lucide-react";
+
+const GUARDAS: { value: GuardaCodigo; label: string }[] = [
+  { value: "todos", label: "Ambas as guardas" },
+  { value: "permanente", label: "Guarda Permanente" },
+  { value: "intermediaria", label: "Guarda Intermediária" },
+];
 
 export const Route = createFileRoute("/codigos")({
   head: () => ({
