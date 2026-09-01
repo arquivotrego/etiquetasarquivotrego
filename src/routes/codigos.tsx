@@ -158,6 +158,7 @@ function CodigosPage() {
                   <th className="px-5 py-2 w-32">Código</th>
                   <th className="px-5 py-2">Descrição</th>
                   <th className="px-5 py-2 w-24 text-center">Prazo</th>
+                  <th className="px-5 py-2 w-32">Guarda</th>
                   <th className="px-5 py-2 w-28">Origem</th>
                   <th className="px-5 py-2 w-12"></th>
                 </tr>
