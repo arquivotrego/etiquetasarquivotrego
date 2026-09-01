@@ -3,6 +3,8 @@ import { TEMPORALIDADE_GP } from "./temporalidade";
 import { TEMPORALIDADE_GI } from "./temporalidade-gi";
 
 export type Origem = "GP" | "GI" | "USER";
+/** Tipo de guarda ao qual um código pertence. */
+export type GuardaCodigo = "permanente" | "intermediaria" | "todos";
 export type Codigo = {
   id: string;
   codigo: string;
@@ -10,6 +12,7 @@ export type Codigo = {
   prazo?: number;
   builtin?: boolean;
   origem?: Origem;
+  guarda?: GuardaCodigo;
 };
 export type TipoEtiqueta = "permanente" | "intermediaria" | "historico" | "sgp";
 export type Etiqueta = {
@@ -36,6 +39,7 @@ const BUILTIN_GP: Codigo[] = TEMPORALIDADE_GP.map((t) => ({
   prazo: t.prazo,
   builtin: true,
   origem: "GP",
+  guarda: "permanente",
 }));
 const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
   id: `builtin-gi-${t.codigo}`,
@@ -44,6 +48,7 @@ const BUILTIN_GI: Codigo[] = TEMPORALIDADE_GI.map((t) => ({
   prazo: t.prazo,
   builtin: true,
   origem: "GI",
+  guarda: "intermediaria",
 }));
 
 const BUILTIN_CODES = new Set<string>([
@@ -133,6 +138,7 @@ type CodigoRow = {
   codigo: string;
   descricao: string;
   prazo: number | null;
+  tipo?: string | null;
 };
 
 type EtiquetaRow = {
@@ -159,6 +165,7 @@ function mapCodigo(r: CodigoRow): Codigo {
     descricao: r.descricao,
     prazo: r.prazo ?? undefined,
     origem: "USER",
+    guarda: (r.tipo as GuardaCodigo | null) ?? "todos",
   };
 }
 
@@ -313,16 +320,21 @@ export function startRealtimeSync() {
 /* ------------------------------------------------------------------ */
 
 export const codigosStore = {
-  list: (tipo?: TipoEtiqueta): Codigo[] =>
-    [...builtinsFor(tipo), ...cacheCodigos].sort((a, b) =>
+  list: (tipo?: TipoEtiqueta): Codigo[] => {
+    const user =
+      tipo === "permanente" || tipo === "intermediaria"
+        ? cacheCodigos.filter((c) => !c.guarda || c.guarda === "todos" || c.guarda === tipo)
+        : cacheCodigos;
+    return [...builtinsFor(tipo), ...user].sort((a, b) =>
       a.codigo.localeCompare(b.codigo, "pt-BR", { numeric: true }),
-    ),
+    );
+  },
   listUser: () => cacheCodigos,
-  add: (codigo: string, descricao: string, prazo?: number) => {
+  add: (codigo: string, descricao: string, prazo?: number, guarda: GuardaCodigo = "todos") => {
     const existing = cacheCodigos.find((c) => c.codigo === codigo);
     const item: Codigo = existing
-      ? { ...existing, descricao, prazo: prazo ?? existing.prazo }
-      : { id: crypto.randomUUID(), codigo, descricao, prazo, origem: "USER" };
+      ? { ...existing, descricao, prazo: prazo ?? existing.prazo, guarda }
+      : { id: crypto.randomUUID(), codigo, descricao, prazo, origem: "USER", guarda };
     cacheCodigos = existing
       ? cacheCodigos.map((c) => (c.id === item.id ? item : c))
       : [...cacheCodigos, item];
@@ -332,7 +344,13 @@ export const codigosStore = {
       supabase
         .from("codigos")
         .upsert(
-          { id: item.id, codigo: item.codigo, descricao: item.descricao, prazo: item.prazo ?? null },
+          {
+            id: item.id,
+            codigo: item.codigo,
+            descricao: item.descricao,
+            prazo: item.prazo ?? null,
+            tipo: item.guarda ?? "todos",
+          } as never,
           { onConflict: "codigo" },
         ),
     );

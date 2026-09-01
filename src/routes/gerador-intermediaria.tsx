@@ -75,6 +75,9 @@ function GeradorIntermediariaPage() {
   function setDescricao(i: number, descricao: string) {
     const next = [...codigos];
     next[i] = { ...next[i], descricao };
+    const alvo = descricao.trim().toLowerCase();
+    const found = cadastrados.find((c) => c.descricao.trim().toLowerCase() === alvo);
+    if (found) next[i].codigo = found.codigo;
     setCodigos(next);
   }
 
@@ -187,6 +190,7 @@ function GeradorIntermediariaPage() {
                 </Field>
                 <Field label="Descrição">
                   <input
+                    list="lista-descricoes-inter"
                     value={c.descricao}
                     onChange={(e) => setDescricao(i, e.target.value)}
                     className="ios-input"
@@ -199,6 +203,13 @@ function GeradorIntermediariaPage() {
               {cadastrados.map((c) => (
                 <option key={c.id} value={c.codigo}>
                   {c.descricao}{c.prazo ? ` — ${c.prazo} anos` : ""}
+                </option>
+              ))}
+            </datalist>
+            <datalist id="lista-descricoes-inter">
+              {cadastrados.map((c) => (
+                <option key={"d-" + c.id} value={c.descricao}>
+                  {c.codigo}
                 </option>
               ))}
             </datalist>

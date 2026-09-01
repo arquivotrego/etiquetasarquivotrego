@@ -28,7 +28,7 @@ function GeradorHistoricoPage() {
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
   ]);
-  const [cadastrados, setCadastrados] = useState(codigosStore.list("permanente"));
+  const [cadastrados, setCadastrados] = useState(codigosStore.list());
 
   useEffect(() => {
     if (!edit) return;
@@ -43,7 +43,7 @@ function GeradorHistoricoPage() {
   }, [edit]);
 
   useEffect(() => {
-    const h = () => setCadastrados(codigosStore.list("permanente"));
+    const h = () => setCadastrados(codigosStore.list());
     window.addEventListener("tre-storage", h);
     return () => window.removeEventListener("tre-storage", h);
   }, []);
@@ -51,7 +51,7 @@ function GeradorHistoricoPage() {
   function setCodigo(i: number, codigo: string) {
     const next = [...codigos];
     next[i] = { ...next[i], codigo };
-    const found = codigosStore.find(codigo, "permanente");
+    const found = codigosStore.find(codigo);
     if (found) next[i].descricao = found.descricao;
     setCodigos(next);
   }
