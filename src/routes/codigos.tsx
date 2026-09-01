@@ -171,6 +171,13 @@ function CodigosPage() {
                     <td className="px-5 py-2 text-center font-mono">
                       {c.prazo ? `${c.prazo} anos` : "—"}
                     </td>
+                    <td className="px-5 py-2 text-xs text-muted-foreground">
+                      {c.guarda === "permanente"
+                        ? "Permanente"
+                        : c.guarda === "intermediaria"
+                        ? "Intermediária"
+                        : "Ambas"}
+                    </td>
                     <td className="px-5 py-2">
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                         c.origem === "GP"
