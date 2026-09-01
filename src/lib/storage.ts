@@ -138,6 +138,7 @@ type CodigoRow = {
   codigo: string;
   descricao: string;
   prazo: number | null;
+  tipo?: string | null;
 };
 
 type EtiquetaRow = {
@@ -164,6 +165,7 @@ function mapCodigo(r: CodigoRow): Codigo {
     descricao: r.descricao,
     prazo: r.prazo ?? undefined,
     origem: "USER",
+    guarda: (r.tipo as GuardaCodigo | null) ?? "todos",
   };
 }
 
