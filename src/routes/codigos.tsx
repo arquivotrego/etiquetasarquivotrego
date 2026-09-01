@@ -39,7 +39,15 @@ function CodigosPage() {
     e.preventDefault();
     if (!codigo.trim() || !descricao.trim()) return;
     const p = parseInt(prazo, 10);
-    codigosStore.add(codigo.trim(), descricao.trim().toUpperCase(), isNaN(p) ? undefined : p);
+    codigosStore.add(
+      codigo.trim(),
+      descricao.trim().toUpperCase(),
+      isNaN(p) ? undefined : p,
+      guarda,
+    );
+    toast.success("Código enviado para todos os usuários", {
+      description: "Acompanhe o status pelo indicador de sincronização.",
+    });
     setCodigo("");
     setDescricao("");
     setPrazo("");
@@ -47,11 +55,15 @@ function CodigosPage() {
 
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim();
-    if (!s) return list;
-    return list.filter((c) =>
-      (c.codigo + " " + c.descricao).toLowerCase().includes(s),
-    );
-  }, [list, q]);
+    return list.filter((c) => {
+      if (s && !(c.codigo + " " + c.descricao).toLowerCase().includes(s)) return false;
+      if (filtroGuarda !== "all") {
+        const g = c.guarda ?? "todos";
+        if (g !== filtroGuarda && g !== "todos") return false;
+      }
+      return true;
+    });
+  }, [list, q, filtroGuarda]);
 
   const gpCount = list.filter((c) => c.origem === "GP").length;
   const giCount = list.filter((c) => c.origem === "GI").length;
