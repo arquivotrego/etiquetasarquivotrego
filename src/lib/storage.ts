@@ -3,6 +3,8 @@ import { TEMPORALIDADE_GP } from "./temporalidade";
 import { TEMPORALIDADE_GI } from "./temporalidade-gi";
 
 export type Origem = "GP" | "GI" | "USER";
+/** Tipo de guarda ao qual um código pertence. */
+export type GuardaCodigo = "permanente" | "intermediaria" | "todos";
 export type Codigo = {
   id: string;
   codigo: string;
@@ -10,6 +12,7 @@ export type Codigo = {
   prazo?: number;
   builtin?: boolean;
   origem?: Origem;
+  guarda?: GuardaCodigo;
 };
 export type TipoEtiqueta = "permanente" | "intermediaria" | "historico" | "sgp";
 export type Etiqueta = {
