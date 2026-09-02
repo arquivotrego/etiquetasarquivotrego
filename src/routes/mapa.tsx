@@ -64,6 +64,7 @@ function MapaPage() {
   const [etiquetas, setEtiquetas] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
   const [lote, setLote] = useState("");
+  const [loteGrupo, setLoteGrupo] = useState<string>(MAPA_GRUPOS[0]?.key ?? "gp");
   const [aberto, setAberto] = useState<string | null>(MAPA_GRUPOS[0]?.key ?? null);
 
   useEffect(() => {
@@ -90,6 +91,26 @@ function MapaPage() {
     return m;
   }, [etiquetas]);
 
+  /** Contagem de caixas criadas e digitalizadas por grupo de corredores. */
+  const contagens = useMemo(() => {
+    const out: Record<string, { total: number; digitalizadas: number }> = {};
+    for (const g of MAPA_GRUPOS) {
+      let total = 0;
+      let digitalizadas = 0;
+      if (g.tipo) {
+        for (const e of etiquetas) {
+          if ((e.tipo ?? "permanente") !== g.tipo) continue;
+          const n = parseInt(e.vaga, 10);
+          if (isNaN(n) || n < 1 || n > g.total) continue;
+          total++;
+          if (e.digitalizado) digitalizadas++;
+        }
+      }
+      out[g.key] = { total, digitalizadas };
+    }
+    return out;
+  }, [etiquetas]);
+
   const alvo = parseInt(q.trim(), 10);
 
   function abrirVaga(et: EtiquetaT) {
@@ -101,6 +122,11 @@ function MapaPage() {
 
 
   function aplicarLote(valor: boolean) {
+    const grupo = MAPA_GRUPOS.find((g) => g.key === loteGrupo);
+    if (!grupo?.tipo) {
+      toast.error("Este grupo de corredores não possui etiquetas vinculadas.");
+      return;
+    }
     const nums = lote
       .split(/[\s,;]+/)
       .map((s) => parseInt(s.trim(), 10))
@@ -113,7 +139,9 @@ function MapaPage() {
     let alterados = 0;
     const semEtiqueta: number[] = [];
     for (const n of unicos) {
-      const ets = etiquetas.filter((e) => parseInt(e.vaga, 10) === n);
+      const ets = etiquetas.filter(
+        (e) => parseInt(e.vaga, 10) === n && (e.tipo ?? "permanente") === grupo.tipo,
+      );
       if (ets.length === 0) {
         semEtiqueta.push(n);
         continue;
@@ -144,6 +172,34 @@ function MapaPage() {
         </p>
       </header>
 
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {MAPA_GRUPOS.map((g) => {
+          const c = contagens[g.key] ?? { total: 0, digitalizadas: 0 };
+          return (
+            <div key={g.key} className="glass-strong rounded-2xl p-4">
+              <div className="text-xs font-semibold tracking-tight text-muted-foreground">
+                CORREDORES {g.sigla}
+              </div>
+              <div className="mt-2 flex items-end gap-4">
+                <div>
+                  <div className="text-2xl font-semibold tabular-nums">{c.total}</div>
+                  <div className="text-[11px] text-muted-foreground">caixas criadas</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-semibold tabular-nums text-emerald-500">
+                    {c.digitalizadas}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">digitalizadas</div>
+                </div>
+              </div>
+              <div className="mt-1 text-[11px] text-muted-foreground">
+                {g.total} vagas · {g.nome}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="glass-strong rounded-2xl p-3 flex items-center gap-2">
         <Search className="h-4 w-4 ml-2 text-muted-foreground" />
         <input
@@ -160,9 +216,26 @@ function MapaPage() {
           <ScanLine className="h-4 w-4 text-primary" /> MARCAR DIGITALIZADO EM LOTE
         </div>
         <p className="text-xs text-muted-foreground">
-          Digite os números das vagas separados por vírgula (ex: 101, 102, 145). As etiquetas
-          correspondentes recebem a tag DIGITALIZADO e a bolinha verde no mapa.
+          Escolha o grupo de corredores e digite os números das vagas separados por vírgula
+          (ex: 101, 102, 145). Somente as etiquetas do tipo escolhido são alteradas.
         </p>
+        <div className="flex flex-wrap gap-1">
+          {MAPA_GRUPOS.map((g) => (
+            <button
+              key={g.key}
+              type="button"
+              disabled={!g.tipo}
+              onClick={() => setLoteGrupo(g.key)}
+              className={`h-9 px-3 rounded-xl text-xs font-medium transition disabled:opacity-30 ${
+                loteGrupo === g.key
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "glass-input hover:bg-white/70"
+              }`}
+            >
+              CORREDORES {g.sigla}
+            </button>
+          ))}
+        </div>
         <textarea
           value={lote}
           onChange={(e) => setLote(e.target.value)}
