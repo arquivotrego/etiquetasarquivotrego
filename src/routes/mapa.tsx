@@ -64,6 +64,7 @@ function MapaPage() {
   const [etiquetas, setEtiquetas] = useState<EtiquetaT[]>([]);
   const [q, setQ] = useState("");
   const [lote, setLote] = useState("");
+  const [loteGrupo, setLoteGrupo] = useState<string>(MAPA_GRUPOS[0]?.key ?? "gp");
   const [aberto, setAberto] = useState<string | null>(MAPA_GRUPOS[0]?.key ?? null);
 
   useEffect(() => {
