@@ -216,9 +216,26 @@ function MapaPage() {
           <ScanLine className="h-4 w-4 text-primary" /> MARCAR DIGITALIZADO EM LOTE
         </div>
         <p className="text-xs text-muted-foreground">
-          Digite os números das vagas separados por vírgula (ex: 101, 102, 145). As etiquetas
-          correspondentes recebem a tag DIGITALIZADO e a bolinha verde no mapa.
+          Escolha o grupo de corredores e digite os números das vagas separados por vírgula
+          (ex: 101, 102, 145). Somente as etiquetas do tipo escolhido são alteradas.
         </p>
+        <div className="flex flex-wrap gap-1">
+          {MAPA_GRUPOS.map((g) => (
+            <button
+              key={g.key}
+              type="button"
+              disabled={!g.tipo}
+              onClick={() => setLoteGrupo(g.key)}
+              className={`h-9 px-3 rounded-xl text-xs font-medium transition disabled:opacity-30 ${
+                loteGrupo === g.key
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "glass-input hover:bg-white/70"
+              }`}
+            >
+              CORREDORES {g.sigla}
+            </button>
+          ))}
+        </div>
         <textarea
           value={lote}
           onChange={(e) => setLote(e.target.value)}
