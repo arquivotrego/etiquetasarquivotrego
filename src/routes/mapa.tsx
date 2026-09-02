@@ -102,6 +102,11 @@ function MapaPage() {
 
 
   function aplicarLote(valor: boolean) {
+    const grupo = MAPA_GRUPOS.find((g) => g.key === loteGrupo);
+    if (!grupo?.tipo) {
+      toast.error("Este grupo de corredores não possui etiquetas vinculadas.");
+      return;
+    }
     const nums = lote
       .split(/[\s,;]+/)
       .map((s) => parseInt(s.trim(), 10))
@@ -114,7 +119,9 @@ function MapaPage() {
     let alterados = 0;
     const semEtiqueta: number[] = [];
     for (const n of unicos) {
-      const ets = etiquetas.filter((e) => parseInt(e.vaga, 10) === n);
+      const ets = etiquetas.filter(
+        (e) => parseInt(e.vaga, 10) === n && (e.tipo ?? "permanente") === grupo.tipo,
+      );
       if (ets.length === 0) {
         semEtiqueta.push(n);
         continue;
