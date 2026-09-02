@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
+import { CodigoPicker } from "@/components/CodigoPicker";
 import { Save, Printer, History } from "lucide-react";
 
 type Search = { edit?: string };
