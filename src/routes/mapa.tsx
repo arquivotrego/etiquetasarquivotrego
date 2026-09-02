@@ -91,6 +91,26 @@ function MapaPage() {
     return m;
   }, [etiquetas]);
 
+  /** Contagem de caixas criadas e digitalizadas por grupo de corredores. */
+  const contagens = useMemo(() => {
+    const out: Record<string, { total: number; digitalizadas: number }> = {};
+    for (const g of MAPA_GRUPOS) {
+      let total = 0;
+      let digitalizadas = 0;
+      if (g.tipo) {
+        for (const e of etiquetas) {
+          if ((e.tipo ?? "permanente") !== g.tipo) continue;
+          const n = parseInt(e.vaga, 10);
+          if (isNaN(n) || n < 1 || n > g.total) continue;
+          total++;
+          if (e.digitalizado) digitalizadas++;
+        }
+      }
+      out[g.key] = { total, digitalizadas };
+    }
+    return out;
+  }, [etiquetas]);
+
   const alvo = parseInt(q.trim(), 10);
 
   function abrirVaga(et: EtiquetaT) {
