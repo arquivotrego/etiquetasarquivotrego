@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { codigosStore, etiquetasStore } from "@/lib/storage";
 import { Etiqueta } from "@/components/Etiqueta";
+import { CodigoPicker } from "@/components/CodigoPicker";
 import { Save, Printer, History } from "lucide-react";
 
 type Search = { edit?: string };
@@ -147,41 +148,19 @@ function GeradorHistoricoPage() {
 
           <div className="space-y-3">
             {codigos.map((c, i) => (
-              <div key={i} className="grid sm:grid-cols-[160px_1fr] gap-3">
-                <Field label={`Código ${i + 1}${i === 0 ? " *" : ""}`}>
-                  <input
-                    list="lista-codigos-hist"
-                    value={c.codigo}
-                    onChange={(e) => setCodigo(i, e.target.value)}
-                    className="ios-input font-mono"
-                    placeholder="13.32"
-                  />
-                </Field>
-                <Field label="Descrição">
-                  <input
-                    list="lista-descricoes-hist"
-                    value={c.descricao}
-                    onChange={(e) => setDescricao(i, e.target.value)}
-                    className="ios-input"
-                    placeholder="REGISTRO DE CANDIDATURA"
-                  />
-                </Field>
-              </div>
+              <CodigoPicker
+                key={i}
+                index={i}
+                items={cadastrados}
+                codigo={c.codigo}
+                descricao={c.descricao}
+                onChange={(v) => {
+                  const next = [...codigos];
+                  next[i] = v;
+                  setCodigos(next);
+                }}
+              />
             ))}
-            <datalist id="lista-codigos-hist">
-              {cadastrados.map((c) => (
-                <option key={c.id} value={c.codigo}>
-                  {c.descricao}
-                </option>
-              ))}
-            </datalist>
-            <datalist id="lista-descricoes-hist">
-              {cadastrados.map((c) => (
-                <option key={"d-" + c.id} value={c.descricao}>
-                  {c.codigo}
-                </option>
-              ))}
-            </datalist>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 pt-2">
