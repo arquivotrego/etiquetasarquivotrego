@@ -152,6 +152,34 @@ function MapaPage() {
         </p>
       </header>
 
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {MAPA_GRUPOS.map((g) => {
+          const c = contagens[g.key] ?? { total: 0, digitalizadas: 0 };
+          return (
+            <div key={g.key} className="glass-strong rounded-2xl p-4">
+              <div className="text-xs font-semibold tracking-tight text-muted-foreground">
+                CORREDORES {g.sigla}
+              </div>
+              <div className="mt-2 flex items-end gap-4">
+                <div>
+                  <div className="text-2xl font-semibold tabular-nums">{c.total}</div>
+                  <div className="text-[11px] text-muted-foreground">caixas criadas</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-semibold tabular-nums text-emerald-500">
+                    {c.digitalizadas}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">digitalizadas</div>
+                </div>
+              </div>
+              <div className="mt-1 text-[11px] text-muted-foreground">
+                {g.total} vagas · {g.nome}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="glass-strong rounded-2xl p-3 flex items-center gap-2">
         <Search className="h-4 w-4 ml-2 text-muted-foreground" />
         <input
