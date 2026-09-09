@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Calendar as CalendarIcon, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -113,8 +114,35 @@ function CertidoesPage() {
     setOpenCal(false);
   }
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const dataExtenso = useMemo(() => (data ? formatExtenso(data) : ""), [data]);
   const canRender = protocolo.trim() && paginas.trim() && motivo.trim() && responsavel.trim() && data;
+
+  const certBody = (
+    <>
+      <div className="cert-logo"><img src={logoUrl} alt="TRE-GO" /></div>
+      <h1 className="cert-title">CERTIDÃO</h1>
+      <div className="cert-spacer" />
+      <p className="cert-body">
+        Certifico que, no processo de digitalização do documento "
+        {protocolo || <span className="cert-placeholder">{"{PROTOCOLO}"}</span>}
+        ", verificou-se que as folhas n° "
+        {paginas || <span className="cert-placeholder">{"{PÁGINAS}"}</span>}
+        " no processo original{" "}
+        <strong style={{ color: "red" }}>{motivo || "{MOTIVO}"}</strong>
+        , o que impede a(as) página(s) ser digitalizada(s).
+      </p>
+      <p className="cert-body cert-goiania">
+        Goiânia, {dataExtenso || <span className="cert-placeholder">{"{DATA}"}</span>}.
+      </p>
+      <div className="cert-sign">
+        <p className="cert-resp">{responsavel || "{RESPONSÁVEL}"}</p>
+        <p className="cert-role">Seção de Gestão Documental</p>
+      </div>
+    </>
+  );
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
