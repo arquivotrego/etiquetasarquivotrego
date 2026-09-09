@@ -418,6 +418,7 @@
 
 @page double-page { size: A4 landscape; margin: 0.8cm; }
 @page single-page { size: A4 portrait; margin: 1.2cm; }
+@page cert-page { size: A4 portrait; margin: 0; }
 
 .print-area { display: flex; flex-direction: column; gap: 1.5rem; }
 
@@ -458,6 +459,7 @@
   .print-area .etiqueta { box-shadow: none !important; }
   .print-double { page: double-page; }
   .print-single { page: single-page; }
+  .print-cert { page: cert-page; }
   .app-bg, .no-print { display: none !important; }
 
   /* Certidão: escapa de containers sticky/overflow que deixavam a folha em branco */
