@@ -459,6 +459,28 @@
   .print-double { page: double-page; }
   .print-single { page: single-page; }
   .app-bg, .no-print { display: none !important; }
+
+  /* Certidão: escapa de containers sticky/overflow que deixavam a folha em branco */
+  .print-area.print-cert {
+    position: fixed !important;
+    top: 0; left: 0; right: 0; bottom: auto;
+    width: 100% !important;
+    display: block !important;
+    overflow: visible !important;
+    z-index: 9999;
+  }
+  .print-cert .print-page,
+  .print-cert .certidao {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
 }
 
 
