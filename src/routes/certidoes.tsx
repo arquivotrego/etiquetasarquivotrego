@@ -237,37 +237,24 @@ function CertidoesPage() {
         </div>
       </div>
 
-      <div className="cert-print-host min-w-0 max-w-full lg:sticky lg:top-24 lg:self-start">
+      <div className="min-w-0 max-w-full lg:sticky lg:top-24 lg:self-start">
         <div className="glass rounded-2xl p-4 overflow-x-auto">
-
           <div className="text-xs font-medium text-muted-foreground mb-3 px-1 no-print">Pré-visualização</div>
-          <div ref={printRef} className="print-area print-cert">
-            <div className="print-page certidao">
-              <div className="cert-logo"><img src={logoUrl} alt="TRE-GO" /></div>
-              <h1 className="cert-title">CERTIDÃO</h1>
-              <div className="cert-spacer" />
-              <p className="cert-body">
-                Certifico que, no processo de digitalização do documento "
-                {protocolo || <span className="cert-placeholder">{"{PROTOCOLO}"}</span>}
-                ", verificou-se que as folhas n° "
-                {paginas || <span className="cert-placeholder">{"{PÁGINAS}"}</span>}
-                " no processo original{" "}
-                <strong style={{ color: "red" }}>
-                  {motivo || "{MOTIVO}"}
-                </strong>
-                , o que impede a(as) página(s) ser digitalizada(s).
-              </p>
-              <p className="cert-body cert-goiania">
-                Goiânia, {dataExtenso || <span className="cert-placeholder">{"{DATA}"}</span>}.
-              </p>
-              <div className="cert-sign">
-                <p className="cert-resp">{responsavel || "{RESPONSÁVEL}"}</p>
-                <p className="cert-role">Seção de Gestão Documental</p>
-              </div>
-            </div>
+          <div ref={printRef} className="no-print">
+            <div className="certidao">{certBody}</div>
           </div>
         </div>
       </div>
+
+      {mounted
+        ? createPortal(
+            <div className="print-area print-cert">
+              <div className="certidao">{certBody}</div>
+            </div>,
+            document.body,
+          )
+        : null}
+
 
       <style>{`
         .ios-input {
