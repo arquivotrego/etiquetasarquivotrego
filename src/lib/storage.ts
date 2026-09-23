@@ -26,7 +26,6 @@ export type Etiqueta = {
   permanente?: boolean;
   tipo?: TipoEtiqueta;
   digitalizado?: boolean;
-  parcial?: boolean;
   local?: string;
   tipoDoc?: string;
   letra?: string;
@@ -153,7 +152,6 @@ type EtiquetaRow = {
   permanente: boolean | null;
   tipo: string | null;
   digitalizado: boolean | null;
-  parcial?: boolean | null;
   local: string | null;
   tipo_doc: string | null;
   letra: string | null;
@@ -185,7 +183,6 @@ function mapEtiqueta(r: EtiquetaRow): Etiqueta {
     permanente: r.permanente ?? undefined,
     tipo: (r.tipo as TipoEtiqueta | null) ?? undefined,
     digitalizado: r.digitalizado ?? false,
-    parcial: r.parcial ?? false,
     local: r.local ?? undefined,
     tipoDoc: r.tipo_doc ?? undefined,
     letra: r.letra ?? undefined,
@@ -204,7 +201,6 @@ function toRow(e: Partial<Etiqueta>) {
   if (e.permanente !== undefined) row['permanente'] = e.permanente;
   if (e.tipo !== undefined) row['tipo'] = e.tipo;
   if (e.digitalizado !== undefined) row['digitalizado'] = e.digitalizado;
-  if (e.parcial !== undefined) row['parcial'] = e.parcial;
   if (e.local !== undefined) row['local'] = e.local;
   if (e.tipoDoc !== undefined) row['tipo_doc'] = e.tipoDoc;
   if (e.letra !== undefined) row['letra'] = e.letra;
