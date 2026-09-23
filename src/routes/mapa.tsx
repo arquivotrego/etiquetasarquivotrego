@@ -93,10 +93,11 @@ function MapaPage() {
 
   /** Contagem de caixas criadas e digitalizadas por grupo de corredores. */
   const contagens = useMemo(() => {
-    const out: Record<string, { total: number; digitalizadas: number }> = {};
+    const out: Record<string, { total: number; digitalizadas: number; parciais: number }> = {};
     for (const g of MAPA_GRUPOS) {
       let total = 0;
       let digitalizadas = 0;
+      let parciais = 0;
       if (g.tipo) {
         for (const e of etiquetas) {
           if ((e.tipo ?? "permanente") !== g.tipo) continue;
@@ -104,9 +105,10 @@ function MapaPage() {
           if (isNaN(n) || n < 1 || n > g.total) continue;
           total++;
           if (e.digitalizado) digitalizadas++;
+          else if (e.parcial) parciais++;
         }
       }
-      out[g.key] = { total, digitalizadas };
+      out[g.key] = { total, digitalizadas, parciais };
     }
     return out;
   }, [etiquetas]);
@@ -147,7 +149,7 @@ function MapaPage() {
         continue;
       }
       for (const e of ets) {
-        etiquetasStore.update(e.id, { digitalizado: valor });
+        etiquetasStore.update(e.id, { digitalizado: valor, ...(valor ? { parcial: false } : {}) });
         alterados++;
       }
     }
@@ -167,14 +169,15 @@ function MapaPage() {
         <p className="text-sm text-muted-foreground mt-1">
           Os corredores estão agrupados por setor e cada grupo tem sua própria numeração, começando
           na vaga 0001. Vagas com <span className="inline-block h-2 w-2 rounded-full bg-white ring-1 ring-black/20 align-middle" /> já
-          possuem etiqueta; com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> também estão digitalizadas —
+possuem etiqueta; com <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle" /> estão totalmente digitalizadas e com{" "}
+          <span className="inline-block h-2 w-2 rounded-full bg-amber-400 align-middle" /> estão parcialmente digitalizadas —
           clique para abrir no histórico já selecionada para impressão.
         </p>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {MAPA_GRUPOS.map((g) => {
-          const c = contagens[g.key] ?? { total: 0, digitalizadas: 0 };
+          const c = contagens[g.key] ?? { total: 0, digitalizadas: 0, parciais: 0 };
           return (
             <div key={g.key} className="glass-strong rounded-2xl p-4">
               <div className="text-xs font-semibold tracking-tight text-muted-foreground">
@@ -190,6 +193,12 @@ function MapaPage() {
                     {c.digitalizadas}
                   </div>
                   <div className="text-[11px] text-muted-foreground">digitalizadas</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-semibold tabular-nums text-amber-500">
+                    {c.parciais}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">parciais</div>
                 </div>
               </div>
               <div className="mt-1 text-[11px] text-muted-foreground">
@@ -310,6 +319,7 @@ function MapaPage() {
                                 const et = porVaga.get(n);
                                 const ocupada = !!et;
                                 const digitalizada = !!et?.digitalizado;
+                                const parcial = !digitalizada && !!et?.parcial;
                                 const destaque = n === alvo;
                                 return (
                                   <button
@@ -319,7 +329,7 @@ function MapaPage() {
                                     disabled={!ocupada}
                                     title={
                                       ocupada
-                                        ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : ""}abrir no histórico`
+                                        ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : parcial ? "parcialmente digitalizada — " : ""}abrir no histórico`
                                         : `Vaga ${n} — livre`
                                     }
                                     className={[
@@ -336,6 +346,9 @@ function MapaPage() {
                                         <span className="h-1 w-1 rounded-full bg-white ring-1 ring-black/20" />
                                         {digitalizada && (
                                           <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                                        )}
+                                        {parcial && (
+                                          <span className="h-1 w-1 rounded-full bg-amber-400" />
                                         )}
                                       </span>
                                     )}
