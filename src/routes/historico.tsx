@@ -17,7 +17,17 @@ function geradorRoute(tipo?: TipoEtiqueta) {
   }
 }
 
-function MiniSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+function MiniSwitch({
+  checked,
+  onChange,
+  label = "DIGIT.",
+  tone = "emerald",
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label?: string;
+  tone?: "emerald" | "amber";
+}) {
   return (
     <button
       type="button"
@@ -28,11 +38,15 @@ function MiniSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boo
       className="h-8 px-2 rounded-lg glass-input inline-flex items-center gap-1.5 select-none"
       title="Digitalizado"
     >
-      <span className="text-[9px] font-semibold tracking-wide text-muted-foreground">DIGIT.</span>
+      <span className="text-[9px] font-semibold tracking-wide text-muted-foreground">{label}</span>
       <span
         className={[
           "relative inline-flex h-[16px] w-[28px] shrink-0 rounded-full transition-colors duration-300 ring-1 ring-inset",
-          checked ? "bg-emerald-500 ring-emerald-600/40" : "bg-muted-foreground/30 ring-black/10",
+          checked
+            ? tone === "amber"
+              ? "bg-amber-400 ring-amber-500/40"
+              : "bg-emerald-500 ring-emerald-600/40"
+            : "bg-muted-foreground/30 ring-black/10",
         ].join(" ")}
       >
         <span
@@ -508,7 +522,23 @@ function HistoricoPage() {
                       </Link>
                       <MiniSwitch
                         checked={!!e.digitalizado}
-                        onChange={(v) => etiquetasStore.update(e.id, { digitalizado: v })}
+                        onChange={(v) =>
+                          etiquetasStore.update(e.id, {
+                            digitalizado: v,
+                            ...(v ? { parcial: false } : {}),
+                          })
+                        }
+                      />
+                      <MiniSwitch
+                        label="PARCIAL"
+                        tone="amber"
+                        checked={!!e.parcial}
+                        onChange={(v) =>
+                          etiquetasStore.update(e.id, {
+                            parcial: v,
+                            ...(v ? { digitalizado: false } : {}),
+                          })
+                        }
                       />
                       <button
                         onClick={() => setEditId(null)}
