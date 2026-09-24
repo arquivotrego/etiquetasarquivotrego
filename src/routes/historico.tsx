@@ -508,7 +508,14 @@ function HistoricoPage() {
                       </Link>
                       <MiniSwitch
                         checked={!!e.digitalizado}
-                        onChange={(v) => etiquetasStore.update(e.id, { digitalizado: v })}
+                        onChange={(v) => etiquetasStore.update(e.id, { digitalizado: v, parcial: v ? false : e.parcial })}
+                      />
+                      <MiniSwitch
+                        checked={!!e.parcial}
+                        onChange={(v) => etiquetasStore.update(e.id, { parcial: v, digitalizado: v ? false : e.digitalizado })}
+                        label="PARCIAL"
+                        title="Parcialmente digitalizado"
+                        activeClass="bg-amber-400 ring-amber-500/40"
                       />
                       <button
                         onClick={() => setEditId(null)}
