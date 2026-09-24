@@ -309,6 +309,7 @@ function MapaPage() {
                               ).map((n) => {
                                 const et = porVaga.get(n);
                                 const ocupada = !!et;
+                                const parcial = !!et?.parcial && !et?.digitalizado;
                                 const digitalizada = !!et?.digitalizado;
                                 const destaque = n === alvo;
                                 return (
@@ -319,7 +320,7 @@ function MapaPage() {
                                     disabled={!ocupada}
                                     title={
                                       ocupada
-                                        ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : ""}abrir no histórico`
+                                        ? `Vaga ${n} — ${digitalizada ? "digitalizada — " : parcial ? "parcialmente digitalizada — " : ""}abrir no histórico`
                                         : `Vaga ${n} — livre`
                                     }
                                     className={[
@@ -336,6 +337,9 @@ function MapaPage() {
                                         <span className="h-1 w-1 rounded-full bg-white ring-1 ring-black/20" />
                                         {digitalizada && (
                                           <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                                        )}
+                                        {parcial && (
+                                          <span className="h-1 w-1 rounded-full bg-yellow-400" />
                                         )}
                                       </span>
                                     )}
