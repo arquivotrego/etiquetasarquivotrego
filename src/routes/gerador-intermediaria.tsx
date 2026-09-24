@@ -1,4 +1,4 @@
-import { DigitalizadoSwitch } from "@/components/DigitalizadoSwitch";
+import { DigitalizadoSwitch, ParcialSwitch } from "@/components/DigitalizadoSwitch";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ function GeradorIntermediariaPage() {
   const [final, setFinal] = useState("");
   const [vaga, setVaga] = useState("");
   const [digitalizado, setDigitalizado] = useState(false);
+  const [parcial, setParcial] = useState(false);
   const [codigos, setCodigos] = useState([
     { codigo: "", descricao: "" },
     { codigo: "", descricao: "" },
@@ -41,6 +42,7 @@ function GeradorIntermediariaPage() {
     setFinal(e.final);
     setVaga(e.vaga);
     setDigitalizado(!!e.digitalizado);
+    setParcial(!!e.parcial && !e.digitalizado);
     const base = [...e.codigos];
     while (base.length < 4) base.push({ codigo: "", descricao: "" });
     setCodigos(base.slice(0, 4));
@@ -103,6 +105,7 @@ function GeradorIntermediariaPage() {
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
       digitalizado,
+      parcial: digitalizado ? false : parcial,
       tipo: "intermediaria" as const,
     };
     let savedId: string;
@@ -123,6 +126,7 @@ function GeradorIntermediariaPage() {
         setFinal("");
         setVaga("");
         setDigitalizado(false);
+        setParcial(false);
         setCodigos([
           { codigo: "", descricao: "" },
           { codigo: "", descricao: "" },
@@ -209,7 +213,8 @@ function GeradorIntermediariaPage() {
             >
               <Printer className="h-4 w-4" /> Salvar e Imprimir
             </button>
-            <DigitalizadoSwitch checked={digitalizado} onChange={setDigitalizado} />
+            <DigitalizadoSwitch checked={digitalizado} onChange={(v) => { setDigitalizado(v); if (v) setParcial(false); }} />
+            <ParcialSwitch checked={parcial} onChange={(v) => { setParcial(v); if (v) setDigitalizado(false); }} />
           </div>
         </div>
       </div>
