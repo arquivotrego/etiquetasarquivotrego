@@ -53,6 +53,7 @@ export type Database = {
           id: string
           letra: string | null
           local: string | null
+          observacao: string | null
           parcial: boolean
           permanente: boolean | null
           tipo: string | null
@@ -70,6 +71,7 @@ export type Database = {
           id?: string
           letra?: string | null
           local?: string | null
+          observacao?: string | null
           parcial?: boolean
           permanente?: boolean | null
           tipo?: string | null
@@ -87,6 +89,7 @@ export type Database = {
           id?: string
           letra?: string | null
           local?: string | null
+          observacao?: string | null
           parcial?: boolean
           permanente?: boolean | null
           tipo?: string | null
