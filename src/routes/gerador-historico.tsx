@@ -22,6 +22,7 @@ function GeradorHistoricoPage() {
   const { edit } = Route.useSearch();
   const [anoDocs, setAnoDocs] = useState("");
   const [vaga, setVaga] = useState("");
+  const [observacao, setObservacao] = useState("");
   const [digitalizado, setDigitalizado] = useState(false);
   const [parcial, setParcial] = useState(false);
   const [codigos, setCodigos] = useState([
@@ -38,6 +39,7 @@ function GeradorHistoricoPage() {
     if (!e) return;
     setAnoDocs(e.final);
     setVaga(e.vaga);
+    setObservacao(e.observacao ?? "");
     setDigitalizado(!!e.digitalizado);
     setParcial(!!e.parcial && !e.digitalizado);
     const base = [...e.codigos];
@@ -77,6 +79,7 @@ function GeradorHistoricoPage() {
     final: anoDocs,
     vaga,
     codigos: codigos.filter((c) => c.codigo.trim()),
+    observacao: observacao.trim() || undefined,
     tipo: "historico" as const,
   };
 
@@ -87,6 +90,7 @@ function GeradorHistoricoPage() {
       final: anoDocs.trim(),
       vaga: vaga.trim(),
       codigos: codigos.filter((c) => c.codigo.trim()),
+      observacao: observacao.trim() || null,
       digitalizado,
       parcial: digitalizado ? false : parcial,
       tipo: "historico" as const,
@@ -107,6 +111,7 @@ function GeradorHistoricoPage() {
       if (!edit) {
         setAnoDocs("");
         setVaga("");
+        setObservacao("");
         setDigitalizado(false);
         setParcial(false);
         setCodigos([
@@ -149,6 +154,16 @@ function GeradorHistoricoPage() {
               <input value={anoDocs} onChange={(e) => setAnoDocs(e.target.value)} className="ios-input" placeholder="1998" inputMode="numeric" />
             </Field>
           </div>
+
+          <Field label="Observação (opcional)">
+            <input
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              className="ios-input"
+              placeholder="Anotação livre que aparecerá na etiqueta"
+              maxLength={120}
+            />
+          </Field>
 
           <div className="space-y-3">
             {codigos.map((c, i) => (

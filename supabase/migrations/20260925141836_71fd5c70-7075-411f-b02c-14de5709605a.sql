@@ -1,0 +1,1 @@
+ALTER TABLE public.etiquetas ADD COLUMN IF NOT EXISTS observacao text;

@@ -30,6 +30,7 @@ export type Etiqueta = {
   local?: string;
   tipoDoc?: string;
   letra?: string;
+  observacao?: string | null;
   createdAt: number;
 };
 
@@ -157,6 +158,7 @@ type EtiquetaRow = {
   local: string | null;
   tipo_doc: string | null;
   letra: string | null;
+  observacao?: string | null;
   created_at: string;
 };
 
@@ -189,6 +191,7 @@ function mapEtiqueta(r: EtiquetaRow): Etiqueta {
     local: r.local ?? undefined,
     tipoDoc: r.tipo_doc ?? undefined,
     letra: r.letra ?? undefined,
+    observacao: r.observacao ?? undefined,
     createdAt: new Date(r.created_at).getTime(),
   };
 }
@@ -208,6 +211,7 @@ function toRow(e: Partial<Etiqueta>) {
   if (e.local !== undefined) row['local'] = e.local;
   if (e.tipoDoc !== undefined) row['tipo_doc'] = e.tipoDoc;
   if (e.letra !== undefined) row['letra'] = e.letra;
+  if (e.observacao !== undefined) row['observacao'] = e.observacao;
   return row;
 }
 
