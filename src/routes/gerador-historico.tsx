@@ -155,16 +155,6 @@ function GeradorHistoricoPage() {
             </Field>
           </div>
 
-          <Field label="Observação (opcional)">
-            <input
-              value={observacao}
-              onChange={(e) => setObservacao(e.target.value)}
-              className="ios-input"
-              placeholder="Anotação livre que aparecerá na etiqueta"
-              maxLength={120}
-            />
-          </Field>
-
           <div className="space-y-3">
             {codigos.map((c, i) => (
               <CodigoPicker
@@ -180,7 +170,18 @@ function GeradorHistoricoPage() {
                 }}
               />
             ))}
+
+            <Field label="Observação (opcional)">
+              <input
+                value={observacao}
+                onChange={(e) => setObservacao(e.target.value)}
+                className="ios-input"
+                placeholder="Anotação livre que aparecerá na etiqueta"
+                maxLength={120}
+              />
+            </Field>
           </div>
+
 
           <div className="flex flex-wrap items-center gap-2 pt-2">
             <button
