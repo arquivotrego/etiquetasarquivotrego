@@ -30,7 +30,7 @@ export type Etiqueta = {
   local?: string;
   tipoDoc?: string;
   letra?: string;
-  observacao?: string;
+  observacao?: string | null;
   createdAt: number;
 };
 

@@ -54,6 +54,11 @@ export function Etiqueta({ data }: { data: Partial<EtiquetaT> }) {
         <div className="et-vaga-num">{data.vaga || ""}</div>
       </div>
 
+      {/* Observação (apenas Histórico, quando preenchida) */}
+      {isHistorico && data.observacao ? (
+        <div className="et-obs"><b>Obs:</b> {data.observacao}</div>
+      ) : null}
+
       {/* Códigos row */}
       <div className="et-cods">
         <div className="et-cods-label">Códigos:</div>
