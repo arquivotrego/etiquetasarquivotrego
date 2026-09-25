@@ -295,6 +295,15 @@
   padding: 0 6px 4px;
 }
 
+/* Observação (Histórico) — acima da linha de códigos */
+.etiqueta .et-obs {
+  padding: 4px 10px;
+  font-size: 9.5pt;
+  line-height: 1.25;
+  border-bottom: 1px solid #000;
+  word-break: break-word;
+}
+
 /* Códigos row: label + 4 cells */
 .etiqueta .et-cods {
   display: grid;
