@@ -302,6 +302,8 @@
   line-height: 1.25;
   border-bottom: 1px solid #000;
   word-break: break-word;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 /* Códigos row: label + 4 cells */
